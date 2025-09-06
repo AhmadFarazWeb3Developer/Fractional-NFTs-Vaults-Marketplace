@@ -29,7 +29,14 @@ contract FractionalNftVault is Utils {
         address sharesBuyer = makeAddr("shares buyer");
 
         vm.startPrank(sharesBuyer);
-        nftVault.buyShares(10);
+
+        nftVault._calculateSharesPrice(10e18); // 10 shares
+        nftVault._calculateSharesPrice(5e18); // 5 shares
+        nftVault._calculateSharesPrice(1e18); // 1 share
+        nftVault._calculateSharesPrice(1e17); // 0.1
+        nftVault._calculateSharesPrice(2e17); // 0.2
+
+        // nftVault.buyShares(10);
 
         vm.stopPrank();
     }
