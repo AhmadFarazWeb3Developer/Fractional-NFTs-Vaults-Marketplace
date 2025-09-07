@@ -23,12 +23,6 @@ abstract contract Utils is Test {
 
         nft = new FractionalNFT(nftOwner, "Fractional NFT", "fNFT");
 
-        nftVault = new FractionalNftVault(
-            nft,
-            nftOwner,
-            "Vault Token",
-            "VT",
-            100 ether
-        );
+        nftVault = new FractionalNftVault(nft, nftOwner, "Vault Token", "VT");
     }
 }

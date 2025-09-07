@@ -31,11 +31,9 @@ contract FractionalNftVault is Ownable, ERC20, IERC721Receiver {
         FractionalNFT _nftContract,
         address _initialOwner,
         string memory _tokenName,
-        string memory _tokenSymbol,
-        uint256 _initialSupply
+        string memory _tokenSymbol
     ) ERC20(_tokenName, _tokenSymbol) Ownable(_initialOwner) {
         nftContract = _nftContract;
-        _mint(address(this), _initialSupply); // number of tokens minted
     }
 
     function depositNftToVault() external onlyOwner {
