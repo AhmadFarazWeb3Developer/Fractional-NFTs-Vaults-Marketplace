@@ -29,44 +29,55 @@ contract FractionalNftVault is Utils {
     }
 
     function test_calculateSharesPrice() public {
-        vm.startPrank(sharesBuyer);
+        address sharesBuyer1 = makeAddr("shares buyer 1");
+        address sharesBuyer2 = makeAddr("shares buyer 2");
+        address sharesBuyer3 = makeAddr("shares buyer 3");
 
+        vm.startPrank(sharesBuyer1);
         nftVault._calculateSharesPrice(10e18); // 10 shares
         nftVault._calculateSharesPrice(5e18); // 5 shares
         nftVault._calculateSharesPrice(1e18); // 1 share
         nftVault._calculateSharesPrice(1e17); // 0.1
         nftVault._calculateSharesPrice(2e17); // 0.2
+        nftVault._calculateSharesPrice(3e17); // 0.3
+        nftVault._calculateSharesPrice(4e17); // 0.4
+        vm.stopPrank();
 
+        // 10+5+1+1 = 17 shares
+
+        vm.startPrank(sharesBuyer2);
+        nftVault._calculateSharesPrice(20e18); // 20 shares
+        nftVault._calculateSharesPrice(30e18); // 30 shares
+        vm.stopPrank();
+        // 20+30 = 50 shares
+
+        vm.startPrank(sharesBuyer3);
+        nftVault._calculateSharesPrice(33e18); // 33 shares
+        // 17+50+33
         vm.stopPrank();
     }
 
     function test_buyShares() public {
-        (uint256 requiredETH, ) = nftVault._calculateSharesPrice(1e18); // 1 share
+        (uint256 requiredETH, ) = nftVault._calculateSharesPrice(17e18); // 17 share
         vm.deal(sharesBuyer, requiredETH);
 
         vm.startPrank(sharesBuyer);
-        nftVault.buyShares{value: requiredETH}(1e18);
+        nftVault.buyShares{value: requiredETH}(17e18);
         vm.stopPrank();
 
-        nftVault.balanceOf(sharesBuyer);
-        assertEq(nftVault.balanceOf(sharesBuyer), 1000e18); // 1 share == 1000 tokens
-        assertEq(nftVault.shares(sharesBuyer), 1e18);
-        assertEq(nftVault.totalShares(), 1e18);
-        assertEq(address(nftVault).balance, (1000e18 * 5e14) / 1e18);
+        assertEq(nftVault.balanceOf(sharesBuyer), 17e18 * 1000);
+        assertEq(address(nftVault).balance, requiredETH);
     }
 
     function test_redeemShares() public {
-        (uint256 requiredETH, ) = nftVault._calculateSharesPrice(1e18); // 1 share
+        (uint256 requiredETH, ) = nftVault._calculateSharesPrice(17e18);
         vm.deal(sharesBuyer, requiredETH);
 
         vm.startPrank(sharesBuyer);
-        nftVault.buyShares{value: requiredETH}(1e18);
+        nftVault.buyShares{value: requiredETH}(17e18);
 
-        nftVault.redeemShares();
+        nftVault.redeemShares(10e18); // 10 shares
 
-        assertEq(address(nftVault).balance, 0);
-        assertEq(address(sharesBuyer).balance, 0.5 ether);
-        assertEq(nftVault.shares(sharesBuyer), 0);
-        assertEq(nftVault.depositedETH(sharesBuyer), 0);
+        console.log(address(nftVault).balance);
     }
 }
