@@ -5,7 +5,6 @@ import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {Address} from "@openzeppelin/contracts/utils/Address.sol";
-
 import {FractionalNFT} from "./FractionalNFT.sol";
 import {IERC721Receiver} from "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 import {console} from "forge-std/console.sol";
@@ -20,15 +19,14 @@ contract FractionalNftVault is
     // any one can create his own shares token for his NFT
     uint256 public constant MAX_SHARES = 100; //
     uint256 public constant TOKENS_PER_SHARE = 1000 * 1e18; // 1000 tokens per share
-    uint256 public constant ETH_PER_TOKEN = 5e14; // 0.0005 ETH required per token = 2.15 $
+    uint256 public constant BASE_ETH_PER_TOKEN = 5e14; // 0.0005 ETH required per token = 2.15 $
     // 1000 tokens * 0.0005 ETH = 0.5 ETH for single shares
+    uint256 public shareHoldersCount = 0;
 
-    // uint256 public totalShares = 0;
-
-    FractionalNFT immutable nftContract;
+    FractionalNFT public immutable nftContract;
 
     error RequiredETHForTokens(uint256 passedValue, uint256 requiredValue);
-    error EthWithdrawlFailed();
+
     error MinimumSharesRequired(uint256 passed, uint256 minimum); // if share is less than 0.1 revert
     error MaximumSharesSurpassed(uint256 passed, uint256 maximum); // maximum share is 100
     error InsufficientShares();
@@ -45,7 +43,8 @@ contract FractionalNftVault is
 
     function depositNftToVault() external onlyOwner {
         nftContract.setNftVault(address(this)); // set vault address
-        nftContract.sendNftToVault(address(this));
+        nftContract.sendNftToVault(address(this)); // list token in vault
+        nftContract.approve(address(this), 0); // approve vault
     }
 
     function buyShares(
@@ -58,6 +57,10 @@ contract FractionalNftVault is
         ) = _calculateSharesPrice(_numberSharesToBuy);
 
         // EFFECTS
+
+        if (balanceOf(_msgSender()) == 0) {
+            shareHoldersCount++;
+        }
         _mint(_msgSender(), numberOfRequiredTokens);
 
         // INTERACTIONS
@@ -65,18 +68,13 @@ contract FractionalNftVault is
             revert RequiredETHForTokens(msg.value, requiredETH);
         else if (msg.value > requiredETH) {
             uint256 excess = msg.value - requiredETH;
-            (bool success, ) = payable(_msgSender()).call{value: excess}("");
-            if (!success) {
-                revert("excess payment failed");
-            }
+            Address.sendValue(payable(_msgSender()), excess);
         }
     }
 
     function redeemShares(uint256 _sharesToRedeem) external nonReentrant {
         // CHECKS
         uint256 requiredTokens = (_sharesToRedeem * TOKENS_PER_SHARE) / 1e18;
-
-        console.log("required tokens :", requiredTokens);
 
         if (requiredTokens > balanceOf(_msgSender())) {
             revert InsufficientShares();
@@ -90,9 +88,10 @@ contract FractionalNftVault is
 
         // EFFECTS
         _burn(_msgSender(), requiredTokens);
-
+        if (balanceOf(_msgSender()) == 0) {
+            shareHoldersCount--;
+        }
         // INTERACTIONS
-
         Address.sendValue(payable(_msgSender()), withdrawlValue);
     }
 
@@ -101,33 +100,56 @@ contract FractionalNftVault is
     ) public view returns (uint256, uint256) {
         uint256 maxShareScaled = MAX_SHARES * 1e18;
 
+        uint256 totalSharesInExistence = (totalSupply() * 1e18) /
+            TOKENS_PER_SHARE;
+
         if (_numberSharesToBuy < 1e17) {
             revert MinimumSharesRequired(_numberSharesToBuy, 1e17);
-        } else if ((totalSupply() + _numberSharesToBuy) > maxShareScaled) {
-            // no more than 100 shares
-
-            uint256 availableShares = maxShareScaled - totalSupply();
+        } else if (
+            (totalSharesInExistence + _numberSharesToBuy) > maxShareScaled
+        ) {
+            uint256 availableShares = maxShareScaled - totalSharesInExistence;
             revert MaximumSharesSurpassed(availableShares, _numberSharesToBuy);
         }
 
         uint256 numberOfRequiredTokens = (_numberSharesToBuy *
             TOKENS_PER_SHARE) / 1e18;
-        uint256 requiredETH = (ETH_PER_TOKEN * numberOfRequiredTokens) / 1e18;
+
+        uint256 currentETHPerToken = _updatedETHPrice();
+
+        uint256 requiredETH = (currentETHPerToken * numberOfRequiredTokens) /
+            1e18;
 
         return (requiredETH, numberOfRequiredTokens);
     }
 
     // function to claim nft if someone hold all tokens supply or means 100% shares holder;
-    function claimNftTo(address _to) external {}
+    /// @notice Claim NFT if caller owns 100% of shares
+
+    function claimNftTo(address _to) external {
+        //CHECKS
+        if (balanceOf(_msgSender()) != totalSupply()) {
+            revert("Not full owner of shares");
+        }
+
+        //EFFECTS
+        _burn(_msgSender(), balanceOf(_msgSender()));
+        nftContract.safeTransferFrom(address(this), _to, 0);
+    }
+
     // function to update token price based on number of buy and redeem
-    function updateTokenPrice() internal {}
+    function _updatedETHPrice() internal view returns (uint256) {
+        // 0.1% increase per user (adjust 1000 to change percentage)
+        uint256 percentageIncrease = (BASE_ETH_PER_TOKEN * shareHoldersCount) /
+            1000;
+        return BASE_ETH_PER_TOKEN + percentageIncrease;
+    }
 
     function sweepDust(address to) external onlyOwner {
         uint256 remainingBalance = address(this).balance;
 
         if (remainingBalance > 0) {
-            (bool success, ) = payable(to).call{value: remainingBalance}("");
-            if (!success) revert EthWithdrawlFailed();
+            Address.sendValue(payable(to), remainingBalance);
         }
     }
 
@@ -153,4 +175,22 @@ contract FractionalNftVault is
     }
 }
 
-// how to changes shares prices on the basis of demand and supply ?
+/*
+
+ what if user transfer tokens externally from one account to another 
+ the count is not updated directly
+
+Can i depend upon tokens supply , how many are minted ?
+totalSupply is global
+
+1000
+10000
+100000
+1000000
+
+but minting larger tokens (shares) doesn't means more people are intersted in it , still not 
+attractive for users 
+
+value should be updated on the basis of users intrest in the project
+
+ */

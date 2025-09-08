@@ -34,6 +34,7 @@ contract FractionalNFT is Ownable, ERC721 {
     function sendNftToVault(address _nftVault) external checkVault(_nftVault) {
         if (_msgSender() != nftVault) revert NotCalledByVault(_msgSender());
 
+        //  approve(nftVault, 0);
         _safeTransfer(owner(), nftVault, 0);
     }
 
