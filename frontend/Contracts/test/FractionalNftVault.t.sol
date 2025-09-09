@@ -138,15 +138,12 @@ contract FractionalNftVault is Utils {
         nftVault.buyShares{value: eth1}(17e18);
         vm.stopPrank();
 
-       
-
         vm.startPrank(sharesBuyer2);
         (uint256 eth2, ) = nftVault._calculateSharesPrice(50e18); // 20 shares
         vm.deal(sharesBuyer2, eth2);
         nftVault.buyShares{value: eth2}(50e18);
         vm.stopPrank();
         //
-     
 
         vm.startPrank(sharesBuyer3);
         (uint256 eth3, ) = nftVault._calculateSharesPrice(33e18); // 33 shares

@@ -8,6 +8,7 @@ import {FractionalNFT} from "../src/FractionalNFT.sol";
 import {VaultToken} from "../src/VaultToken.sol";
 
 abstract contract Utils is Test {
+    address factoryOwner = makeAddr("factory owner");
     address nftOwner = makeAddr("nft owner");
 
     FractionalNFTsVaultsMarketplaceFactory factory;
@@ -15,17 +16,14 @@ abstract contract Utils is Test {
     FractionalNftVault nftVault;
     FractionalNFT nft;
 
-
-
     VaultToken vaultToken;
 
     function setUp() public virtual {
-        factory = new FractionalNFTsVaultsMarketplaceFactory();
-
         nft = new FractionalNFT(nftOwner, "Fractional NFT", "fNFT");
-
         nftVault = new FractionalNftVault(nft, nftOwner);
-
         //         vaultToken = new VaultToken();
+
+        // User will always interact with factory
+        factory = new FractionalNFTsVaultsMarketplaceFactory(factoryOwner);
     }
 }
