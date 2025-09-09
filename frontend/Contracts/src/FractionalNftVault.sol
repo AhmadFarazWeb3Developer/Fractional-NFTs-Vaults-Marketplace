@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 
-import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+// import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import {VaultToken} from "./VaultToken.sol";
+
 import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {Address} from "@openzeppelin/contracts/utils/Address.sol";
@@ -11,7 +13,7 @@ import {console} from "forge-std/console.sol";
 
 contract FractionalNftVault is
     Ownable,
-    ERC20,
+    VaultToken,
     ReentrancyGuard,
     IERC721Receiver
 {
@@ -21,7 +23,6 @@ contract FractionalNftVault is
     uint256 public constant TOKENS_PER_SHARE = 1000 * 1e18; // 1000 tokens per share
     uint256 public constant BASE_ETH_PER_TOKEN = 5e14; // 0.0005 ETH required per token = 2.15 $
     // 1000 tokens * 0.0005 ETH = 0.5 ETH for single shares
-    uint256 public shareHoldersCount = 0;
 
     FractionalNFT public immutable nftContract;
 
@@ -34,10 +35,8 @@ contract FractionalNftVault is
 
     constructor(
         FractionalNFT _nftContract,
-        address _initialOwner,
-        string memory _tokenName,
-        string memory _tokenSymbol
-    ) ERC20(_tokenName, _tokenSymbol) Ownable(_initialOwner) {
+        address _initialOwner
+    ) Ownable(_initialOwner) {
         nftContract = _nftContract;
     }
 
@@ -123,7 +122,6 @@ contract FractionalNftVault is
         return (requiredETH, numberOfRequiredTokens);
     }
 
-    // function to claim nft if someone hold all tokens supply or means 100% shares holder;
     /// @notice Claim NFT if caller owns 100% of shares
 
     function claimNftTo(address _to) external {
@@ -134,12 +132,14 @@ contract FractionalNftVault is
 
         //EFFECTS
         _burn(_msgSender(), balanceOf(_msgSender()));
+
+        shareHoldersCount = 0;
         nftContract.safeTransferFrom(address(this), _to, 0);
     }
 
     // function to update token price based on number of buy and redeem
     function _updatedETHPrice() internal view returns (uint256) {
-        // 0.1% increase per user (adjust 1000 to change percentage)
+        // 0.1% increase per user
         uint256 percentageIncrease = (BASE_ETH_PER_TOKEN * shareHoldersCount) /
             1000;
         return BASE_ETH_PER_TOKEN + percentageIncrease;
@@ -174,23 +174,3 @@ contract FractionalNftVault is
         return IERC721Receiver.onERC721Received.selector;
     }
 }
-
-/*
-
- what if user transfer tokens externally from one account to another 
- the count is not updated directly
-
-Can i depend upon tokens supply , how many are minted ?
-totalSupply is global
-
-1000
-10000
-100000
-1000000
-
-but minting larger tokens (shares) doesn't means more people are intersted in it , still not 
-attractive for users 
-
-value should be updated on the basis of users intrest in the project
-
- */
