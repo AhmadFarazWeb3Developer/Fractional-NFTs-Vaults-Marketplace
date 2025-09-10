@@ -27,7 +27,6 @@ contract FractionalNftVault is Utils {
 
     function test_tokenURI() public onlyNftOwner {
         nftVault.depositNftToVault();
-
         assertEq(nftVault.tokenURI(0), nft.tokenURI(0));
     }
 
@@ -44,29 +43,30 @@ contract FractionalNftVault is Utils {
     }
 
     function test_buyShares() public {
-        vm.startPrank(sharesBuyer1);
         (uint256 eth1, ) = nftVault._calculateSharesPrice(17e18); // 17 shares
+        (uint256 eth2, ) = nftVault._calculateSharesPrice(50e18); // 50 shares
+        (uint256 eth3, ) = nftVault._calculateSharesPrice(33e18); // 33 shares
+
         vm.deal(sharesBuyer1, eth1);
+        vm.deal(sharesBuyer2, eth2);
+        vm.deal(sharesBuyer3, eth3);
+
+        vm.startPrank(sharesBuyer1);
         nftVault.buyShares{value: eth1}(17e18);
         vm.stopPrank();
 
         vm.startPrank(sharesBuyer2);
-        (uint256 eth2, ) = nftVault._calculateSharesPrice(50e18); // 20 shares
-        vm.deal(sharesBuyer2, eth2);
         nftVault.buyShares{value: eth2}(50e18);
         vm.stopPrank();
-        //
 
         vm.startPrank(sharesBuyer3);
-        (uint256 eth3, ) = nftVault._calculateSharesPrice(33e18); // 33 shares
-        vm.deal(sharesBuyer3, eth3);
         nftVault.buyShares{value: eth3}(33e18);
         vm.stopPrank();
     }
 
     function test_redeemShares() public {
         (uint256 eth1, ) = nftVault._calculateSharesPrice(17e18); // 17 shares
-        (uint256 eth2, ) = nftVault._calculateSharesPrice(50e18); // 20 shares
+        (uint256 eth2, ) = nftVault._calculateSharesPrice(50e18); // 50 shares
         (uint256 eth3, ) = nftVault._calculateSharesPrice(33e18); // 33 shares
 
         vm.deal(sharesBuyer1, eth1);
@@ -105,14 +105,18 @@ contract FractionalNftVault is Utils {
     }
 
     function test_claimNftTo() public {
+       
+        address sharesBuyer = makeAddr("shares Buyer");
+        address nftBuyer = makeAddr("NFT buyer");
+
+        (uint256 requiredETH, ) = nftVault._calculateSharesPrice(10e18); // 10 shares
+        vm.deal(sharesBuyer, requiredETH);
+
         vm.startPrank(nftOwner);
         nftVault.depositNftToVault();
         vm.stopPrank();
 
-        address sharesBuyer = makeAddr("shares Buyer");
-        (uint256 requiredETH, ) = nftVault._calculateSharesPrice(10e18); // 10 shares
 
-        vm.deal(sharesBuyer, requiredETH);
         vm.startPrank(sharesBuyer);
         nftVault.buyShares{value: requiredETH}(10e18);
         nftVault.claimNftTo(sharesBuyer);
@@ -124,7 +128,6 @@ contract FractionalNftVault is Utils {
         assertEq(nftVault.balanceOf(sharesBuyer), 0);
         assertEq(nftVault.totalSupply(), 0);
 
-        address nftBuyer = makeAddr("NFT buyer");
 
         vm.startPrank(sharesBuyer);
         nftVault.nftContract().transferFrom(sharesBuyer, nftBuyer, 0); // NFT sold
@@ -132,24 +135,30 @@ contract FractionalNftVault is Utils {
     }
 
     function test_shareHoldersCount() public {
-        vm.startPrank(sharesBuyer1);
+       
         (uint256 eth1, ) = nftVault._calculateSharesPrice(17e18); // 17 shares
+        (uint256 eth2, ) = nftVault._calculateSharesPrice(50e18); // 20 shares
+        (uint256 eth3, ) = nftVault._calculateSharesPrice(33e18); // 33 shares
+       
         vm.deal(sharesBuyer1, eth1);
+        vm.deal(sharesBuyer2, eth2);
+        vm.deal(sharesBuyer3, eth3);
+       
+
+        vm.startPrank(sharesBuyer1);
         nftVault.buyShares{value: eth1}(17e18);
         vm.stopPrank();
 
+
         vm.startPrank(sharesBuyer2);
-        (uint256 eth2, ) = nftVault._calculateSharesPrice(50e18); // 20 shares
-        vm.deal(sharesBuyer2, eth2);
         nftVault.buyShares{value: eth2}(50e18);
         vm.stopPrank();
-        //
+
 
         vm.startPrank(sharesBuyer3);
-        (uint256 eth3, ) = nftVault._calculateSharesPrice(33e18); // 33 shares
-        vm.deal(sharesBuyer3, eth3);
         nftVault.buyShares{value: eth3}(33e18);
         vm.stopPrank();
+
 
         assertEq(nftVault.shareHoldersCount(), 3);
     }

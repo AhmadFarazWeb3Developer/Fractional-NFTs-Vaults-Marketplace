@@ -1,22 +1,35 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.13;
 
-import {FractionalNFT} from "./FractionalNFT.sol";
-import {FractionalNftVault} from "./FractionalNftVault.sol";
 import {Context} from "@openzeppelin/contracts/utils/Context.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
+import {Address} from "@openzeppelin/contracts/utils/Address.sol";
+
+import {FractionalNFT} from "./FractionalNFT.sol";
+import {FractionalNftVault} from "./FractionalNftVault.sol";
+
+/// @title Fractional NFTs Vaults Marketplace Factory
+/// @notice Factory contract to deploy FractionalNFT + FractionalNftVault pairs
+/// @dev Each unique NFT collection name/symbol pair maps to one vault
 
 contract FractionalNFTsVaultsMarketplaceFactory is Context, Ownable {
+    /// @dev Maps vault Owner → deployed vault
     mapping(address => address) public vaults;
+
+    /// @dev Tracks uniqueness of NFT names
     mapping(string => bool) private nftNames;
+
+    /// @dev Tracks uniqueness of NFT symbols
     mapping(string => bool) private nftSymbols;
 
     error NftNameOrSymbolExits();
 
     constructor(address _marketPlaceOwner) Ownable(_marketPlaceOwner) {}
 
-    // if user try to create same vault again ?
-    // create mapping
+    /// @notice Deploy a new FractionalNFT + FractionalNftVault pair
+    /// @param _nftName The name of the NFT collection (must be unique)
+    /// @param _nftSymbol The symbol of the NFT collection (must be unique)
+    /// @return Address of the newly created vault
     function createNftVault(
         string memory _nftName,
         string memory _nftSymbol
@@ -32,11 +45,30 @@ contract FractionalNFTsVaultsMarketplaceFactory is Context, Ownable {
             _nftSymbol
         );
 
-        FractionalNftVault vault = new FractionalNftVault(nft, _msgSender());
+        FractionalNftVault vault = new FractionalNftVault(
+            nft,
+            _msgSender(),
+            address(this)
+        );
+
         vaults[_msgSender()] = address(vault);
         nftNames[_nftName] = true;
         nftSymbols[_nftSymbol] = true;
 
         return address(vault);
+    }
+
+    /// @notice Sweep all ETH from this factory to a target address
+
+    function sweepETH(address _address) external onlyOwner {
+        Address.sendValue(payable(_address), address(this).balance);
+    }
+
+    /// @notice Receive ETH with no calldata
+    receive() external payable {}
+
+    /// @notice Rejects ETH transfers with calldata
+    fallback() external payable {
+        revert();
     }
 }

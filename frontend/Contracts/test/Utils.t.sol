@@ -20,10 +20,11 @@ abstract contract Utils is Test {
 
     function setUp() public virtual {
         nft = new FractionalNFT(nftOwner, "Fractional NFT", "fNFT");
-        nftVault = new FractionalNftVault(nft, nftOwner);
-        //         vaultToken = new VaultToken();
 
-        // User will always interact with factory
+        // user will always interact with factory
         factory = new FractionalNFTsVaultsMarketplaceFactory(factoryOwner);
+
+        nftVault = new FractionalNftVault(nft, nftOwner, address(factory));
+        //         vaultToken = new VaultToken();
     }
 }

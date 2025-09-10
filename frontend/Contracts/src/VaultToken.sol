@@ -3,16 +3,26 @@ pragma solidity ^0.8.13;
 
 import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import {console} from "forge-std/console.sol";
-// REMOVE ABSTRACT KEYWORD FOR TESTING
 
+// REMOVE ABSTRACT KEYWORD FOR TESTING THE vaultToken
+
+/// @title VaultToken
+/// @notice ERC20 token tracking unique shareholders.
 abstract contract VaultToken is ERC20 {
+    /// @notice Number of shareholders.
     uint256 public shareHoldersCount = 0;
 
+    /// @notice Emitted when shareholder count changes.
+    /// @param For Address affected.
+    /// @param Vaule New shareholder count.
     event ShareHoldersCountUpdated(address indexed For, uint256 indexed Vaule);
 
+    /// @dev ERC20 init with fixed name/symbol.
     constructor() ERC20("Vault Token", "VT") {}
 
-    // for transfering some of shares tokens
+    /// @notice Transfer tokens.
+    /// @param to Recipient.
+    /// @param value Amount.
     function transfer(
         address to,
         uint256 value
@@ -24,6 +34,10 @@ abstract contract VaultToken is ERC20 {
         return true;
     }
 
+    /// @notice Transfer tokens on behalf.
+    /// @param from Sender.
+    /// @param to Recipient.
+    /// @param value Amount.
     function transferFrom(
         address from,
         address to,
@@ -37,6 +51,10 @@ abstract contract VaultToken is ERC20 {
         return true;
     }
 
+    /// @dev Updates shareholder count.
+    /// @param _from Sender.
+    /// @param _to Recipient.
+    /// @param _value Amount.
     function _updateShareHoldersCount(
         address _from,
         address _to,
@@ -62,7 +80,9 @@ abstract contract VaultToken is ERC20 {
         }
     }
 
-    // UN COMMENT FOR TESTING
+    // /// @notice Mint tokens (testing).
+    // /// @param _to Recipient.
+    // /// @param _value Amount.
     // function mint(address _to, uint256 _value) public {
     //     uint256 currentBalance = balanceOf(_to);
     //     _mint(_to, _value);
