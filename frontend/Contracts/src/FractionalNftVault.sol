@@ -71,15 +71,19 @@ contract FractionalNftVault is
             uint256 numberOfRequiredTokens
         ) = _calculateSharesPrice(_numberSharesToBuy);
 
+        // CHECKS
         if (balanceOf(_msgSender()) == 0) {
             shareHoldersCount++;
         }
+
+        // EFFECTS
         _mint(_msgSender(), numberOfRequiredTokens);
 
         if (msg.value < requiredETH)
             revert RequiredETHForTokens(msg.value, requiredETH);
         else if (msg.value > requiredETH) {
             uint256 excess = msg.value - requiredETH;
+            // INTERACTION
             Address.sendValue(payable(_msgSender()), excess);
         }
     }
@@ -88,6 +92,8 @@ contract FractionalNftVault is
     /// @param _sharesToRedeem Number of shares to redeem (18 decimals)
     function redeemShares(uint256 _sharesToRedeem) external nonReentrant {
         uint256 requiredTokens = (_sharesToRedeem * TOKENS_PER_SHARE) / 1e18;
+
+        // CHECKS
         if (requiredTokens > balanceOf(_msgSender())) {
             revert InsufficientShares();
         }
@@ -95,19 +101,21 @@ contract FractionalNftVault is
         uint256 totalSharesInExistence = (totalSupply() * 1e18) /
             TOKENS_PER_SHARE;
 
-        uint256 withdrawlValue = (address(this).balance * _sharesToRedeem) /
+        uint256 withdrawalValue = (address(this).balance * _sharesToRedeem) /
             totalSharesInExistence;
-        uint256 marketplaceFee = (withdrawlValue * MARKETPLACE_FEE) / 1e18;
+        uint256 marketplaceFee = (withdrawalValue * MARKETPLACE_FEE) / 1e18;
 
+        // EFFECTS
         _burn(_msgSender(), requiredTokens);
         if (balanceOf(_msgSender()) == 0) {
             shareHoldersCount--;
         }
 
+        // INTERACTIONS
         Address.sendValue(payable(factory), marketplaceFee);
         Address.sendValue(
             payable(_msgSender()),
-            withdrawlValue - marketplaceFee
+            withdrawalValue - marketplaceFee
         );
     }
 
@@ -144,12 +152,15 @@ contract FractionalNftVault is
     /// @notice Claim NFT if caller owns 100% of shares
     /// @param _to Receiver of NFT
     function claimNftTo(address _to) external {
+        // CHECKS
         if (balanceOf(_msgSender()) != totalSupply()) {
             revert("Not full owner of shares");
         }
 
+        // EFFECTS
         _burn(_msgSender(), balanceOf(_msgSender()));
         shareHoldersCount = 0;
+        // INTERACTIONS
         nftContract.safeTransferFrom(address(this), _to, 0);
     }
 
