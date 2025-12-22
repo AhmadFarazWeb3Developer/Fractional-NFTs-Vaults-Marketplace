@@ -15,31 +15,31 @@ Fractional NFTs Vaults Marketplace is a protocol where each vault represents a s
 
 1. **For Share Buyers:**
 
-   * On each purchase of shares, the vault token price increases by `0.1%`.
-   * Users can withdraw their shares at any time and take advantage of the increased value from more shareholders.
-   * The more shareholders there are, the higher the profit potential.
-   * A smaller number of shares with more holders will benefit early buyers more.
-   * If someone holds 100% of the shares at any time, they can withdraw the NFT.
-   * Maximum shares are `100`.
+   - On each purchase of shares, the vault token price increases by `0.1%`.
+   - Users can withdraw their shares at any time and take advantage of the increased value from more shareholders.
+   - The more shareholders there are, the higher the profit potential.
+   - A smaller number of shares with more holders will benefit early buyers more.
+   - If someone holds 100% of the shares at any time, they can withdraw the NFT.
+   - Maximum shares are `100`.
 
 2. **For Marketplace Owner:**
 
-   * On each share sale by a user, the marketplace takes a `0.3%` cut from the ETH that the user withdraws.
+   - On each share sale by a user, the marketplace takes a `0.3%` cut from the ETH that the user withdraws.
 
 ### Scope
 
 `/Contracts/src`
 
-* `/Factory.sol`
-* `/FractionalNFT.sol`
-* `/FractionalNFTVault.sol`
-* `/VaultToken.sol`
+- `/Factory.sol`
+- `/FractionalNFT.sol`
+- `/FractionalNFTVault.sol`
+- `/VaultToken.sol`
 
 ### Testing
 
-* Foundry
+- Foundry
 
 ### Audit
 
-* Manual audit with proper CEI, ownership, and reentrancy checks.
-* Automatic tool: Slither
+- Manual audit with proper CEI, ownership, and reentrancy checks.
+- Automatic tool: Slither
