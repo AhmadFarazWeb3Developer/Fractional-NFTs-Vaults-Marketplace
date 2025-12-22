@@ -1,4 +1,4 @@
-// =========== UNCOMMENT FOR TESTING  ==============
+ // =========== UNCOMMENT FOR TESTING  ==============
 
 /* 
 
@@ -75,7 +75,3 @@ contract VaultTokenTest is Utils {
 
 
 */
-
-
-
-
