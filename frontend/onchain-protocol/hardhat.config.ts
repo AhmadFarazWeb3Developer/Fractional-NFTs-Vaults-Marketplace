@@ -7,14 +7,6 @@ export default defineConfig({
   solidity: {
     compilers: [
       {
-        version: "0.8.13",
-        settings: { optimizer: { enabled: true, runs: 200 } },
-      },
-      {
-        version: "0.8.20",
-        settings: { optimizer: { enabled: true, runs: 200 } },
-      },
-      {
         version: "0.8.30",
         settings: { optimizer: { enabled: true, runs: 200 } },
       },
@@ -22,7 +14,12 @@ export default defineConfig({
   },
 
   networks: {
-    hardhatMainnet: { type: "edr-simulated", chainType: "l1" },
-    hardhatOp: { type: "edr-simulated", chainType: "op" },
+    localhost: {
+      type: "http",
+      chainId: 31337,
+      url: "http://127.0.0.1:8545/",
+    },
   },
 });
+
+//  npx hardhat run scripts/deployProtocol.ts  --network localhost

@@ -1,28 +1,44 @@
-import { existsSync, mkdirSync, writeFileSync } from "fs";
-import { network } from "hardhat";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "fs";
+import { network, config } from "hardhat";
 
-const { ethers, networkName, chainType } = await network.connect();
+const { ethers } = await network.connect("localhost");
+
+type Deployments = Record<string, { [key: string]: any }>;
 
 const deployProtocol = async () => {
   try {
+    config.networks;
     const [factoryOwner] = await ethers.getSigners();
-
-    const Factory = await ethers.deployContract(
-      "FractionalNFTsVaultsMarketplaceFactory",
-      [factoryOwner]
+    const FractionalNFTsVaultsMarketplaceFactory =
+      await ethers.getContractFactory("FractionalNFTsVaultsMarketplaceFactory");
+    const Factory = await FractionalNFTsVaultsMarketplaceFactory.deploy(
+      factoryOwner
     );
+
     await Factory.waitForDeployment();
 
     const factoryAddress = await Factory.getAddress();
-    const ProtocolAddresses = { FactoryAddress: factoryAddress };
+    const protocolAddresses = { FactoryAddress: factoryAddress };
 
     const deploymentFolder = "./deployment";
-    const filePath = `${deploymentFolder}/ProtocolAddress.json`;
+    const filePath = `${deploymentFolder}/protocolAddresses.json`;
+    let allDeployments: Deployments = {};
 
     if (!existsSync(deploymentFolder)) {
       mkdirSync(deploymentFolder, { recursive: true });
     }
-    writeFileSync(filePath, JSON.stringify(ProtocolAddresses, null, 2));
+    if (existsSync(filePath)) {
+      allDeployments = JSON.parse(readFileSync(filePath, "utf-8"));
+    }
+
+    const net = await ethers.provider.getNetwork();
+    const chainId: string = net.chainId.toString();
+
+    allDeployments[chainId] = {
+      ...protocolAddresses,
+    };
+
+    writeFileSync(filePath, JSON.stringify(allDeployments, null, 2));
   } catch (error) {
     console.log(error);
   }
