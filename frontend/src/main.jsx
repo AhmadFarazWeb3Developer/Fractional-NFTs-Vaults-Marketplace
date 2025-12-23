@@ -5,12 +5,16 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import App from "./app/App.jsx";
 import HomePage from "./pages/HomePage.js";
 import "./styles/global.css";
+import LearnMorePage from "./pages/LearnMorePage.js";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
-    children: [{ path: "/", element: <HomePage /> }],
+    children: [
+      { path: "/", element: <HomePage /> },
+      { path: "/learn-more", element: <LearnMorePage /> },
+    ],
   },
 ]);
 

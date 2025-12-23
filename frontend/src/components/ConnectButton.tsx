@@ -81,7 +81,7 @@ const ConnectButton = () => {
   const networkImageUrl = getNetworkImageUrl();
 
   return (
-    <div className="navbar flex flex-row justify-between items-center  tracking-wide font-chypre">
+    <div className="navbar flex flex-row justify-between items-center  tracking-wide font-poppins">
       <div className="flex flex-row items-center gap-3">
         {isConnected ? (
           <div className="flex flex-row items-center gap-2 p-1 shadow-lg cursor-pointer ">
@@ -98,7 +98,7 @@ const ConnectButton = () => {
             {caipNetwork && (
               <button
                 onClick={() => open({ view: "Networks" })}
-                className="flex items-center gap-2 px-3 py-2  text-white hover:bg-[#21e786] hover:text-black transition-all"
+                className="flex items-center gap-2 px-3 py-2  text-white hover:bg-[#21e786] hover:text-black transition-all cursor-pointer"
               >
                 {networkImageUrl && (
                   <img
@@ -112,7 +112,7 @@ const ConnectButton = () => {
                 )}
 
                 {(!networkImageUrl || !imageLoaded) && (
-                  <div className="w-5 h-5 bg-black flex items-center justify-center text-[10px] font-bold text-white ring-1 ring-white rounded-full ">
+                  <div className="w-5 h-5 bg-black flex items-center justify-center text-[10px]  text-white ring-1 ring-white rounded-full ">
                     {caipNetwork.name?.charAt(0)?.toUpperCase() || "N"}
                   </div>
                 )}
@@ -135,11 +135,10 @@ const ConnectButton = () => {
         ) : (
           <button
             onClick={() => open()}
-            className=" bg-[#21e786] text-black cursor-pointer text-sm font-bold py-1 px-4 sm:px-6 sm:text-lg flex flex-row items-center gap-2 transition-colors"
+            className=" bg-[#21e786] text-black cursor-pointer text-sm  py-1 px-4 sm:px-6 sm:text-lg flex flex-row items-center justify-center gap-2 transition-colors"
           >
-            <Wallet size={18} strokeWidth={3} />
-            Connect
-            <span className="hidden sm:inline"> Wallet </span>
+            <Wallet size={20} strokeWidth={3} />
+            <p>CONNECT</p>
           </button>
         )}
       </div>

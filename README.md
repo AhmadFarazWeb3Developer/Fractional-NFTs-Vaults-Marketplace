@@ -1,6 +1,6 @@
 # Fractional NFTs Vaults Marketplace
 
-![alt](Image.png)
+![alt](/readme-images/Homepage.png)
 
 **Description:**
 Fractional NFTs Vaults Marketplace is a protocol where each vault represents a single NFT. Users can invest in these vaults by purchasing fractional shares of the NFT stored inside. This makes it possible for multiple investors to collectively own and benefit from high-value NFTs that may otherwise be too expensive to purchase individually. By holding shares, users can trade, redeem, or collectively profit from the underlying NFT.

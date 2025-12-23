@@ -5,10 +5,10 @@ const WhyChooseFractionalVaults = () => {
     <div className="px-6 lg:px-12 xl:px-20 py-20 border-t border-white/10">
       <div className="max-w-[1400px] mx-auto">
         <div className="text-center mb-16 space-y-4">
-          <h2 className="text-4xl lg:text-5xl font-bold text-white">
+          <h2 className="text-4xl lg:text-5xl  text-white">
             Why Choose Fractional Vaults?
           </h2>
-          <p className="text-lg text-white/60">
+          <p className="text-lg text-white/60 font-poppins">
             Experience the future of NFT investing with our innovative features
           </p>
         </div>
@@ -18,13 +18,11 @@ const WhyChooseFractionalVaults = () => {
             <div className="w-14 h-14 bg-black border border-[#21e786] flex items-center justify-center mb-6">
               <TrendingUp className="text-[#21e786] w-7 h-7" />
             </div>
-            <h3 className="text-2xl font-bold text-white mb-3">
-              Price Appreciation
-            </h3>
-            <p className="text-white/60 leading-relaxed">
+            <h3 className="text-2xl  text-white mb-3">Price Appreciation</h3>
+            <p className="text-white/60 leading-relaxed font-poppins">
               Every share purchase increases vault price by{" "}
-              <span className="text-[#21e786] font-semibold">0.1%</span>. Early
-              investors benefit most from growing demand.
+              <span className="text-[#21e786] ">0.1%</span>. Early investors
+              benefit most from growing demand.
             </p>
           </div>
 
@@ -32,15 +30,11 @@ const WhyChooseFractionalVaults = () => {
             <div className="w-14 h-14 bg-black border border-[#21e786] flex items-center justify-center mb-6">
               <Users className="text-[#21e786] w-7 h-7" />
             </div>
-            <h3 className="text-2xl font-bold text-white mb-3">
-              Collective Ownership
-            </h3>
-            <p className="text-white/60 leading-relaxed">
+            <h3 className="text-2xl  text-white mb-3">Collective Ownership</h3>
+            <p className="text-white/60 leading-relaxed font-poppins">
               Join forces with other investors. Each vault divides into{" "}
-              <span className="text-[#21e786] font-semibold">
-                100 fractional shares
-              </span>{" "}
-              for accessible entry.
+              <span className="text-[#21e786] ">100 fractional shares</span> for
+              accessible entry.
             </p>
           </div>
 
@@ -48,15 +42,11 @@ const WhyChooseFractionalVaults = () => {
             <div className="w-14 h-14 bg-black border border-[#21e786] flex items-center justify-center mb-6">
               <Lock className="text-[#21e786] w-7 h-7" />
             </div>
-            <h3 className="text-2xl font-bold text-white mb-3">
-              Secure Vaults
-            </h3>
-            <p className="text-white/60 leading-relaxed">
+            <h3 className="text-2xl  text-white mb-3">Secure Vaults</h3>
+            <p className="text-white/60 leading-relaxed font-poppins">
               NFTs safely locked in{" "}
-              <span className="text-[#21e786] font-semibold">
-                audited smart contracts
-              </span>
-              . Transparent, trustless, and fully on-chain.
+              <span className="text-[#21e786] ">audited smart contracts</span>.
+              Transparent, trustless, and fully on-chain.
             </p>
           </div>
 
@@ -64,15 +54,11 @@ const WhyChooseFractionalVaults = () => {
             <div className="w-14 h-14 bg-black border border-[#21e786] flex items-center justify-center mb-6">
               <TrendingUp className="text-[#21e786] w-7 h-7" />
             </div>
-            <h3 className="text-2xl font-bold text-white mb-3">
-              Withdraw Anytime
-            </h3>
-            <p className="text-white/60 leading-relaxed">
+            <h3 className="text-2xl  text-white mb-3">Withdraw Anytime</h3>
+            <p className="text-white/60 leading-relaxed font-poppins">
               Redeem your shares instantly at{" "}
-              <span className="text-[#21e786] font-semibold">
-                current market value
-              </span>
-              . Full liquidity, no lock-up periods.
+              <span className="text-[#21e786] ">current market value</span>.
+              Full liquidity, no lock-up periods.
             </p>
           </div>
         </div>
