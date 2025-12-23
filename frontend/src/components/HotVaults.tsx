@@ -78,7 +78,6 @@ const HotVaultCard = ({
           <span className="text-base text-[#21e786]">{floorPrice}</span>
         </div>
 
-        {/* Progress */}
         <div className="space-y-2">
           <div className="flex justify-between items-center">
             <span className="text-xs text-white/40 uppercase">Progress</span>
@@ -94,7 +93,6 @@ const HotVaultCard = ({
           </div>
         </div>
 
-        {/* Buttons */}
         <div className="flex gap-3 pt-3">
           <button className="flex-1 bg-[#21e786] text-black py-2 cursor-pointer flex items-center justify-center gap-2 border border-black">
             Buy Shares <ArrowRight className="w-4 h-4" />

@@ -9,7 +9,6 @@ const HomePage = () => {
     <div className="min-h-screen bg-black text-white">
       <Navbar />
       <HeroSection />
-
       <HotVaults />
       <WhyChooseFractionalVaults />
       <Footer />

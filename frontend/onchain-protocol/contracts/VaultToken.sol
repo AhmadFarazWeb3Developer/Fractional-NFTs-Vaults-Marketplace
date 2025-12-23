@@ -2,7 +2,6 @@
 pragma solidity ^0.8.13;
 
 import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import {console} from "forge-std/console.sol";
 
 // REMOVE ABSTRACT KEYWORD FOR TESTING THE vaultToken
 
