@@ -13,10 +13,26 @@ const useCreateNFTVault = () => {
     const tx = await factoryInstance.createNftVault(nftName, nftSymbol);
 
     const receipt = await tx.wait();
+
+    if (receipt) {
+      const vaultAddress = await factoryInstance.vaults(address);
+
+      const response = await fetch(
+        "http://localhost:8000/api/v1/create-vault",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ vaultAddress }),
+        }
+      );
+
+      await response.json();
+    }
+
     if (!address) return;
     console.log(receipt);
-
-    console.log(await factoryInstance.vaults(address));
   };
 
   return { createNFTVault };
