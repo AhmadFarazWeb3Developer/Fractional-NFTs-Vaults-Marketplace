@@ -5,17 +5,7 @@ import Navbar from "../components/NavBar";
 import HeroSection from "../components/sections/HeroSection";
 import WhyChooseFractionalVaults from "../components/sections/WhyChooseFractionalVaults";
 
-import useCreateNFTVault from "../blockchain-interaction/useCreateNftVault";
-
 const HomePage = () => {
-  const { createNFTVault } = useCreateNFTVault();
-  useEffect(() => {
-    const init = async () => {
-      await createNFTVault("Baago1", "BBG1");
-    };
-    init();
-  });
-
   return (
     <div className="min-h-screen bg-black text-white">
       <Navbar />

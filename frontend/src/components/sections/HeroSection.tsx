@@ -24,7 +24,10 @@ const HeroSection = () => {
           </div>
 
           <div className="flex flex-wrap gap-5 pt-4">
-            <button className="group relative bg-[#21e786] text-black px-10 py-5  transition-all hover:opacity-90 overflow-hidden cursor-pointer">
+            <button
+              onClick={() => navigate("/explore-vaults")}
+              className="group relative bg-[#21e786] text-black px-10 py-5  transition-all hover:opacity-90 overflow-hidden cursor-pointer"
+            >
               <span className="relative flex items-center gap-2">
                 Explore Vaults
                 <ArrowRight className="w-5 h-5" />
@@ -32,7 +35,7 @@ const HeroSection = () => {
             </button>
 
             <button
-              onClick={() => navigate("learn-more")}
+              onClick={() => navigate("/learn-more")}
               className="bg-black text-white px-10 py-5  border border-white/20 hover:border-[#21e786] transition-all cursor-pointer"
             >
               Learn More

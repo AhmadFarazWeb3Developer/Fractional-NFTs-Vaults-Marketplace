@@ -7,6 +7,9 @@ import HomePage from "./pages/HomePage.js";
 import "./styles/global.css";
 import LearnMorePage from "./pages/LearnMorePage.js";
 
+import ExploreVaultsPage from "./pages/ExploreVaults.js";
+import CreateVaultPage from "./pages/CreateVaultPage.js";
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -14,6 +17,8 @@ const router = createBrowserRouter([
     children: [
       { path: "/", element: <HomePage /> },
       { path: "/learn-more", element: <LearnMorePage /> },
+      { path: "/explore-vaults", element: <ExploreVaultsPage /> },
+      { path: "/create-vault", element: <CreateVaultPage /> },
     ],
   },
 ]);

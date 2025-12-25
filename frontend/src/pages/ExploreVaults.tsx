@@ -1,0 +1,102 @@
+import { Plus } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+
+const vaults = [
+  {
+    id: "1",
+    image: "https://images.unsplash.com/photo-1634973357973-f2ed2657db3c?w=600",
+    name: "Azuki #9605",
+    collection: "Azuki Collection",
+    totalShares: 100,
+    soldShares: 82,
+    floorPrice: "15.2 ETH",
+  },
+  {
+    id: "2",
+    image: "https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?w=600",
+    name: "Bored Ape #8817",
+    collection: "Ape Collection",
+    totalShares: 100,
+    soldShares: 67,
+    floorPrice: "52.5 ETH",
+  },
+];
+
+const ExploreVaultsPage = () => {
+  const navigate = useNavigate();
+
+  return (
+    <div className="min-h-screen bg-black px-6 lg:px-12 py-20 text-white">
+      <div className="flex justify-between items-center mb-12">
+        <h1 className="text-4xl font-bakbak">Explore Vaults</h1>
+
+        <button
+          onClick={() => navigate("/create-vault")}
+          className="flex items-center gap-2 bg-[#21e786] text-black px-6 py-3 border border-black  cursor-pointer"
+        >
+          <Plus size={18} />
+          Create Vault
+        </button>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {vaults.map((vault) => {
+          const progress = Math.round(
+            (vault.soldShares / vault.totalShares) * 100
+          );
+
+          return (
+            <div
+              key={vault.id}
+              className="bg-black border border-white/15 overflow-hidden"
+            >
+              <div className="h-[220px] relative">
+                <img
+                  src={vault.image}
+                  alt={vault.name}
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
+              </div>
+
+              <div className="p-5 space-y-3">
+                <div>
+                  <div className="text-xs text-white/60 uppercase">
+                    {vault.collection}
+                  </div>
+                  <div className="text-lg">{vault.name}</div>
+                </div>
+
+                <div className="flex justify-between border-y border-white/10 py-2">
+                  <span className="text-xs text-white/40">Floor</span>
+                  <span className="text-[#21e786]">{vault.floorPrice}</span>
+                </div>
+
+                <div>
+                  <div className="flex justify-between text-xs mb-1">
+                    <span className="text-white/40">Progress</span>
+                    <span>
+                      {vault.soldShares} / {vault.totalShares}
+                    </span>
+                  </div>
+                  <div className="h-2 border border-white/10 bg-white/10">
+                    <div
+                      className="h-full bg-[#21e786]"
+                      style={{ width: `${progress}%` }}
+                    />
+                  </div>
+                </div>
+
+                <button className="w-full bg-[#21e786] text-black py-3  cursor-pointer border border-black">
+                  View Vault
+                </button>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
+export default ExploreVaultsPage;
