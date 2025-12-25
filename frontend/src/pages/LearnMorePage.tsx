@@ -13,7 +13,7 @@ const LearnMorePage = () => {
             Fractional NFTs Vaults Marketplace
           </h2>
 
-          <p className="text-white/70 leading-relaxed">
+          <p className="text-white/70 leading-relaxed text-justify">
             Fractional NFTs Vaults Marketplace is a protocol where each vault
             represents a single NFT. Users can invest in these vaults by
             purchasing fractional shares of the NFT stored inside. This makes it
@@ -28,7 +28,7 @@ const LearnMorePage = () => {
     {
       title: "What We Offer",
       content: (
-        <div className="space-y-10 font-poppins">
+        <div className="space-y-10 font-poppins text-justify">
           <div className="space-y-4">
             <h3 className="text-2xl  text-white">Working</h3>
             <ul className="list-decimal list-inside text-white/70 space-y-2">
@@ -46,10 +46,10 @@ const LearnMorePage = () => {
             </ul>
           </div>
 
-          <div className="space-y-4 font-poppins">
+          <div className="space-y-4 font-poppins ">
             <h3 className="text-2xl  text-white">Revenue Model</h3>
 
-            <div className="space-y-3">
+            <div className="space-y-3 ">
               <h4 className="text-lg text-white">For Share Buyers:</h4>
               <ul className="list-disc list-inside text-white/70 space-y-2">
                 <li>
@@ -106,26 +106,23 @@ const LearnMorePage = () => {
       <Navbar />
 
       <div className="flex min-h-screen">
-        <aside className="w-[300px] border-r border-white/10 p-8 space-y-6">
+        <aside className="w-[300px] border-r border-white/10 py-8 pr-8 space-y-6">
           {steps.map((item, index) => (
             <button
               key={index}
               onClick={() => setStep(index)}
-              className={`w-full text-left p-4 border transition-all ${
+              className={`w-full text-left p-4 border transition-all cursor-pointer ${
                 step === index
                   ? "border-[#21e786] text-white"
                   : "border-white/10 text-white/60 hover:border-white/30"
               }`}
             >
-              <div className="text-sm uppercase tracking-wide">
-                Step {index + 1}
-              </div>
               <div className="">{item.title}</div>
             </button>
           ))}
         </aside>
 
-        <main className="flex-1 p-12 overflow-y-auto">
+        <main className="flex-1 p-8 overflow-y-auto">
           {steps[step].content}
 
           <div className="pt-12">

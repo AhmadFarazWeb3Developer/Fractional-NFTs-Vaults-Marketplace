@@ -6,9 +6,9 @@ import VaultToken from "../../../onchain-protocol/artifacts/contracts/VaultToken
 const abis = () => {
   return {
     factoryAbi: Factory.abi,
-    fractionalNFT: FractionalNFT.abi,
-    fractionalNftVault: FractionalNftVault.abi,
-    vaultToken: VaultToken.abi,
+    fractionalNFTAbi: FractionalNFT.abi,
+    fractionalNftVaultAbi: FractionalNftVault.abi,
+    vaultTokenAbi: VaultToken.abi,
   };
 };
 

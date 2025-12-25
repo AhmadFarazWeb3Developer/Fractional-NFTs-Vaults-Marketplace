@@ -16,6 +16,10 @@ const useReadInstances = () => {
     const { factoryAddress } = getAddressesByChainId(numericChainId);
     const { factoryAbi } = abis();
     const factoryInstance = new Contract(factoryAddress, factoryAbi, provider);
+
+    if (!factoryInstance) return;
+
+    return { factoryInstance };
   };
   return { readInstances };
 };

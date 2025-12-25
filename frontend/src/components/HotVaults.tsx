@@ -1,6 +1,6 @@
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Plus } from "lucide-react";
 import { HotVaultCardProps } from "../interfaces/HotVaultCardProps";
-
+import { useNavigate } from "react-router-dom";
 const vaults = [
   {
     nftId: "1",
@@ -108,11 +108,22 @@ const HotVaultCard = ({
 };
 
 const HotVaults = () => {
+  const navigate = useNavigate();
+
   return (
-    <div className="py-10 ">
-      <h2 className="text-4xl text-[#21e786] mb-10">
-        HOT <span className=" text-white">VAULTS</span>
-      </h2>
+    <div className="py-10 border-t border-white/10 ">
+      <div className=" flex flex-row justify-between mb-10">
+        <h2 className="text-4xl text-[#21e786] ">
+          HOT <span className=" text-white">VAULTS</span>
+        </h2>
+        <button
+          onClick={() => navigate("/create-vault")}
+          className="flex items-center gap-2 bg-[#21e786] text-black px-6 py-3 border border-black  cursor-pointer"
+        >
+          <Plus size={18} />
+          Create Vault
+        </button>
+      </div>
       <div className="flex flex-wrap gap-4">
         {vaults.map((vault) => (
           <HotVaultCard key={vault.nftId} {...vault} />

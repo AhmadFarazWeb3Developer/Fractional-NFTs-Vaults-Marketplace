@@ -8,7 +8,11 @@ const CreateVaultPage = () => {
 
   const { createNFTVault } = useCreateNFTVault();
   const handleCreateVault = async () => {
-    await createNFTVault(nftName, nftSymbol);
+    const result = await createNFTVault(nftName, nftSymbol);
+    if (result === true) {
+      setNftName("");
+      setNftSymbol("");
+    }
   };
 
   return (
@@ -21,7 +25,7 @@ const CreateVaultPage = () => {
           <input
             value={nftName}
             onChange={(e) => setNftName(e.target.value)}
-            className="w-full bg-black border border-white/20 px-4 py-3 text-white outline-none"
+            className="w-full bg-black border border-white/20 px-4 py-3 text-white outline-none placeholder:font-poppins"
             placeholder="e.g. Azuki Vault"
           />
         </div>
@@ -31,7 +35,7 @@ const CreateVaultPage = () => {
           <input
             value={nftSymbol}
             onChange={(e) => setNftSymbol(e.target.value)}
-            className="w-full bg-black border border-white/20 px-4 py-3 text-white outline-none"
+            className="w-full bg-black border border-white/20 px-4 py-3 text-white outline-none placeholder:font-poppins"
             placeholder="e.g. AZUKI"
           />
         </div>

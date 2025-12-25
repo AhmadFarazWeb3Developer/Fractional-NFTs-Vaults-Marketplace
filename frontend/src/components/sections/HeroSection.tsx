@@ -10,13 +10,13 @@ const HeroSection = () => {
       <div className="w-full flex flex-col sm:flex-row items-center justify-between gap-12 lg:gap-20">
         <div className="flex-1 space-y-8 max-w-2xl">
           <div className="space-y-6">
-            <h1 className="text-6xl sm:text-5xl leading-[1.1] tracking-wide">
+            <h1 className="text-6xl sm:text-5xl leading-[1.1] tracking-wide ">
               OWN A FRACTION OF PREMIUM {""}
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#21e786] to-[#21e786]"></span>
               <span className="text-white/80">NFTs</span>
             </h1>
 
-            <p className="text-xl sm:text-xl text-white/60 leading-relaxed max-w-xl font-poppins  font-light">
+            <p className="text-xl sm:text-xl text-white/60 leading-relaxed max-w-xl font-poppins text-justify font-light">
               Invest in high-value NFTs without breaking the bank.{" "}
               <span className="text-[#21e786]">Buy fractional shares</span>,
               earn from price appreciation, and trade anytime.

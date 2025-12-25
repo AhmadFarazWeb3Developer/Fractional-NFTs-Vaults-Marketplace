@@ -1,20 +1,25 @@
 import { useAppKitAccount } from "@reown/appkit/react";
 import useWriteInstances from "./helpers/useWriteInstances";
+import { toast } from "sonner";
+import { decodeError } from "./helpers/decodeError";
 
 const useCreateNFTVault = () => {
   const { writeInstances } = useWriteInstances();
   const { address } = useAppKitAccount();
+
   const createNFTVault = async (nftName: string, nftSymbol: string) => {
-    const instances = await writeInstances();
-    if (!instances) return;
+    if (!address) return;
 
-    const { factoryInstance } = instances;
+    try {
+      const instances = await writeInstances();
+      if (!instances) return;
 
-    const tx = await factoryInstance.createNftVault(nftName, nftSymbol);
+      const { factoryInstance } = instances;
+      const tx = await factoryInstance.createNftVault(nftName, nftSymbol);
 
-    const receipt = await tx.wait();
+      const receipt = await tx.wait();
+      if (!receipt) return;
 
-    if (receipt) {
       const vaultAddress = await factoryInstance.vaults(address);
 
       const response = await fetch(
@@ -28,11 +33,22 @@ const useCreateNFTVault = () => {
         }
       );
 
-      await response.json();
-    }
+      console.log(await response.json());
 
-    if (!address) return;
-    console.log(receipt);
+      if (response.status !== 201) {
+        throw new Error("Backend failed to store vault");
+      }
+
+      toast.success("Vault created!", {
+        action: { label: "", onClick: () => {} },
+      });
+
+      console.log(receipt);
+
+      return true;
+    } catch (error: any) {
+      decodeError(error);
+    }
   };
 
   return { createNFTVault };

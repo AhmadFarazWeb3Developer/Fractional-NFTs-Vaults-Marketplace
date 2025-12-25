@@ -7,8 +7,9 @@ import HomePage from "./pages/HomePage.js";
 import "./styles/global.css";
 import LearnMorePage from "./pages/LearnMorePage.js";
 
-import ExploreVaultsPage from "./pages/ExploreVaults.js";
+import ExploreVaultsPage from "./pages/ExploreVaultsPage.js";
 import CreateVaultPage from "./pages/CreateVaultPage.js";
+import SingleVaultPage from "./pages/SingleVaultPage.js";
 
 const router = createBrowserRouter([
   {
@@ -19,6 +20,7 @@ const router = createBrowserRouter([
       { path: "/learn-more", element: <LearnMorePage /> },
       { path: "/explore-vaults", element: <ExploreVaultsPage /> },
       { path: "/create-vault", element: <CreateVaultPage /> },
+      { path: "/single-vault", element: <SingleVaultPage /> },
     ],
   },
 ]);

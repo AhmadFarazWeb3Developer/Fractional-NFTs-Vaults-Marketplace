@@ -1,5 +1,7 @@
 import { Plus } from "lucide-react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import useAllVaults from "../blockchain-interaction/useAllVaults";
 
 const vaults = [
   {
@@ -24,6 +26,14 @@ const vaults = [
 
 const ExploreVaultsPage = () => {
   const navigate = useNavigate();
+
+  const { allVaults } = useAllVaults();
+  useEffect(() => {
+    const init = async () => {
+      await allVaults();
+    };
+    init();
+  });
 
   return (
     <div className="min-h-screen bg-black px-6 lg:px-12 py-20 text-white">
@@ -87,7 +97,10 @@ const ExploreVaultsPage = () => {
                   </div>
                 </div>
 
-                <button className="w-full bg-[#21e786] text-black py-3  cursor-pointer border border-black">
+                <button
+                  onClick={() => navigate("/single-vault")}
+                  className="w-full bg-[#21e786] text-black py-3  cursor-pointer border border-black"
+                >
                   View Vault
                 </button>
               </div>
