@@ -1,39 +1,41 @@
 import { Plus } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useAllVaults from "../blockchain-interaction/useAllVaults";
+import useSingleVault from "@/blockchain-interaction/useSingleVault";
 
-const vaults = [
-  {
-    id: "1",
-    image: "https://images.unsplash.com/photo-1634973357973-f2ed2657db3c?w=600",
-    name: "Azuki #9605",
-    collection: "Azuki Collection",
-    totalShares: 100,
-    soldShares: 82,
-    floorPrice: "15.2 ETH",
-  },
-  {
-    id: "2",
-    image: "https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?w=600",
-    name: "Bored Ape #8817",
-    collection: "Ape Collection",
-    totalShares: 100,
-    soldShares: 67,
-    floorPrice: "52.5 ETH",
-  },
-];
+type VaultType = {
+  tokenURI: string;
+  NFTName: string;
+  NFTSymbol: string;
+  totalShares: number;
+  soldShares: number;
+  floorPrice: string;
+};
 
 const ExploreVaultsPage = () => {
   const navigate = useNavigate();
 
+  const [vaults, setVaults] = useState<VaultType[]>([]);
+
   const { allVaults } = useAllVaults();
+  const { singleVault } = useSingleVault();
+
   useEffect(() => {
     const init = async () => {
-      await allVaults();
+      if (!allVaults) return;
+
+      const allData = await Promise.all(
+        allVaults.map(
+          async (vault: string) => await singleVault(vault.vaultAddress)
+        )
+      );
+
+      setVaults(allData);
     };
+
     init();
-  });
+  }, [allVaults]);
 
   return (
     <div className="min-h-screen bg-black px-6 lg:px-12 py-20 text-white">
@@ -56,10 +58,7 @@ const ExploreVaultsPage = () => {
           );
 
           return (
-            <div
-              key={vault.id}
-              className="bg-black border border-white/15 overflow-hidden"
-            >
+            <div className="bg-black border border-white/15 overflow-hidden">
               <div className="h-[220px] relative">
                 <img
                   src={vault.image}

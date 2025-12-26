@@ -7,6 +7,6 @@ const vaultSchema = new mongoose.Schema({
   },
 });
 
-const Vaults = mongoose.model("valut", vaultSchema);
+const Vaults = mongoose.model("vault", vaultSchema);
 
 export default Vaults;

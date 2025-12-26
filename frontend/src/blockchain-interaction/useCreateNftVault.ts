@@ -39,9 +39,7 @@ const useCreateNFTVault = () => {
         throw new Error("Backend failed to store vault");
       }
 
-      toast.success("Vault created!", {
-        action: { label: "", onClick: () => {} },
-      });
+      toast.success("Vault created!");
 
       console.log(receipt);
 

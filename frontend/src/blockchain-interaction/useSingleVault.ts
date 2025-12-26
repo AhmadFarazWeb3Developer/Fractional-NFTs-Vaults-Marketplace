@@ -1,31 +1,43 @@
 import { Contract } from "ethers";
 import abis from "./helpers/abi";
 import getProvider from "./helpers/getProvider";
-import useReadInstances from "./helpers/useReadInstances";
 
 const useSingleVault = () => {
-  const { readInstances } = useReadInstances();
-
   const singleVault = async (vaultAddress: string) => {
     const provider = getProvider(31337);
 
-    const { fractionalNftVaultAbi, fractionalNFTAbi } = abis(); // console.log(await factoryInstance.attach(vaultAddress).tokenURI(0));
+    const { fractionalNftVaultAbi, fractionalNFTAbi } = abis();
 
-    const fractionalNFTInstance = new Contract(
-      vaultAddress,
-      fractionalNFTAbi,
-      provider
-    );
-    const fractionalNFTVaultInstance = new Contract(
+    const VaultInstance = new Contract(
       vaultAddress,
       fractionalNftVaultAbi,
       provider
     );
 
-    console.log(await fractionalNFTInstance.tokenURI(0));
-    console.log(await fractionalNFTInstance.name());
-    console.log(await fractionalNFTInstance.symbol());
-    console.log(await fractionalNFTVaultInstance.MAX_SHARES());
+    const NFTContractAddress = await VaultInstance.nftContract();
+
+    const NFTInstance = new Contract(
+      NFTContractAddress,
+      fractionalNFTAbi,
+      provider
+    );
+
+    const tokenURI = await NFTInstance.tokenURI(0);
+    const NFTName = await NFTInstance.name();
+    const NFTSymbol = await NFTInstance.symbol();
+
+    const totalShares = 100;
+    const soldShares = 82;
+    const floorPrice = "15.2 ETH";
+
+    return {
+      tokenURI: tokenURI,
+      NFTName,
+      NFTSymbol,
+      totalShares,
+      soldShares,
+      floorPrice,
+    };
   };
 
   return { singleVault };
