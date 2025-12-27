@@ -1,40 +1,46 @@
-import { PinataSDK } from "pinata";
-import dotenv from "dotenv";
 import { Request, Response } from "express";
 
-dotenv.config();
-
-const pinata = new PinataSDK({
-  pinataJwt: process.env.PINATA_JWT,
-  pinataGateway: process.env.PINATA_GATEWAY,
-});
-
-const uploadNFTImage = async (req: Request, res: Response) => {
+const getUploadedNFTUrl = async (req: Request, res: Response) => {
   try {
-    const { nftPrice } = req.body;
-    const nftImage = req.file;
+    const { filename } = req.body;
 
-    if (!nftImage) {
-      return res.status(400).json({ error: "No image file provided" });
+    if (!filename) {
+      return res.status(400).json({ error: "Filename is required" });
     }
 
-    const blob = new Blob([nftImage.buffer], { type: nftImage.mimetype });
+    const payload = {
+      network: "public",
+      expires: 30,
+      date: Math.floor(Date.now() / 1000), //  mandatory
+      filename: filename,
+      allow_mime_types: ["image/*"],
+      max_file_size: 5000000,
+    };
 
-    const uploadResult = await pinata.upload.public.file(blob, {
-      name: nftImage.originalname,
+    const urlRequest = await fetch(
+      "https://uploads.pinata.cloud/v3/files/sign",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${process.env.PINATA_JWT}`,
+        },
+        body: JSON.stringify(payload),
+      }
+    );
+
+    const signedUrlData = await urlRequest.json();
+
+    return res.status(200).json({
+      signedUrlData,
     });
-
-    const cid = uploadResult.cid;
-    const gatewayUrl = `https://${process.env.PINATA_GATEWAY}/ipfs/${cid}`;
-
-    res.status(201).json({
-      message: "NFT uploaded to IPFS successfully",
-      data: { nftPrice, cid, gatewayUrl },
+  } catch (error) {
+    console.error("Error:", error);
+    return res.status(500).json({
+      error: "Failed to create signed URL",
+      message: error instanceof Error ? error.message : "Unknown error",
     });
-  } catch (error: any) {
-    console.error("Error in mintNFT:", error);
-    res.status(500).json({ error: error.message });
   }
 };
 
-export default uploadNFTImage;
+export default getUploadedNFTUrl;

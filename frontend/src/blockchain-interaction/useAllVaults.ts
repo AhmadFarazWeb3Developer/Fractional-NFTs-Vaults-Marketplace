@@ -16,7 +16,7 @@ const useAllVaults = () => {
     const allVaults = async () => {
       try {
         const response = await fetch(
-          "http://localhost:8000/api/v1/get-all-vaults/"
+          `${import.meta.env.VITE_SERVER_URL_V1}/get-all-vaults/`
         );
 
         const data = await response.json();

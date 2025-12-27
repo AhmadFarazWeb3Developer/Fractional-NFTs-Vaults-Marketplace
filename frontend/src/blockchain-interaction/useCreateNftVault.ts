@@ -2,16 +2,26 @@ import { useAppKitAccount } from "@reown/appkit/react";
 import useWriteInstances from "./helpers/useWriteInstances";
 import { toast } from "sonner";
 import { decodeError } from "./helpers/decodeError";
+import useUploadNFTImage from "./useUploadNFTImage";
 
 const useCreateNFTVault = () => {
-  const { writeInstances } = useWriteInstances();
   const { address } = useAppKitAccount();
-
-  const createNFTVault = async (nftName: string, nftSymbol: string) => {
+  const { writeInstances } = useWriteInstances();
+  const { uploadNFTImage } = useUploadNFTImage();
+  const createNFTVault = async (
+    nftName: string,
+    nftSymbol: string,
+    image: File | null
+  ) => {
     if (!address) return;
+    if (!image) {
+      toast.error("NFT image is required");
+      return;
+    }
 
     console.log(nftName);
     console.log(nftSymbol);
+    console.log(image);
 
     try {
       const instances = await writeInstances();
@@ -19,10 +29,18 @@ const useCreateNFTVault = () => {
       if (!instances) return;
 
       const { factoryInstance } = instances;
-      const tx = await factoryInstance.createNftVault(nftName, nftSymbol);
 
-      const receipt = await tx.wait();
-      if (!receipt) return;
+      const { ipfsLink } = await uploadNFTImage(image);
+
+      console.log(ipfsLink);
+      // const tx = await factoryInstance.createNftVault(
+      //   nftName,
+      //   nftSymbol,
+      //   nftUri
+      // );
+
+      // const receipt = await tx.wait();
+      // if (!receipt) return;
 
       const vaultAddress = await factoryInstance.vaults(address);
 
@@ -47,7 +65,7 @@ const useCreateNFTVault = () => {
         action: { label: "Close", onClick: () => {} },
       });
 
-      console.log(receipt);
+      // console.log(receipt);
 
       return true;
     } catch (error: any) {
