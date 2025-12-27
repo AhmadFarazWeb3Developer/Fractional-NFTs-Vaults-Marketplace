@@ -3,13 +3,14 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useAllVaults from "../blockchain-interaction/useAllVaults";
 import useSingleVault from "@/blockchain-interaction/useSingleVault";
+import { formatEther } from "ethers";
 
 type VaultType = {
   tokenURI: string;
   NFTName: string;
   NFTSymbol: string;
-  totalShares: number;
-  soldShares: number;
+  totalShareHolders: string;
+  soldShares: string;
   floorPrice: string;
 };
 
@@ -53,16 +54,14 @@ const ExploreVaultsPage = () => {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {vaults.map((vault) => {
-          const progress = Math.round(
-            (vault.soldShares / vault.totalShares) * 100
-          );
+          const progress = Math.round((parseInt(vault.soldShares) / 100) * 100);
 
           return (
             <div className="bg-black border border-white/15 overflow-hidden">
               <div className="h-[220px] relative">
                 <img
-                  src={vault.image}
-                  alt={vault.name}
+                  src={vault.tokenURI}
+                  alt={vault.NFTName}
                   className="w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
@@ -71,21 +70,23 @@ const ExploreVaultsPage = () => {
               <div className="p-5 space-y-3">
                 <div>
                   <div className="text-xs text-white/60 uppercase">
-                    {vault.collection}
+                    {vault.NFTSymbol}
                   </div>
-                  <div className="text-lg">{vault.name}</div>
+                  <div className="text-lg">{vault.NFTName}</div>
                 </div>
 
                 <div className="flex justify-between border-y border-white/10 py-2">
                   <span className="text-xs text-white/40">Floor</span>
-                  <span className="text-[#21e786]">{vault.floorPrice}</span>
+                  <span className="text-[#21e786]">
+                    {formatEther(vault.floorPrice)} ETH
+                  </span>
                 </div>
 
                 <div>
                   <div className="flex justify-between text-xs mb-1">
                     <span className="text-white/40">Progress</span>
                     <span>
-                      {vault.soldShares} / {vault.totalShares}
+                      {vault.soldShares} / {vault.totalShareHolders}
                     </span>
                   </div>
                   <div className="h-2 border border-white/10 bg-white/10">

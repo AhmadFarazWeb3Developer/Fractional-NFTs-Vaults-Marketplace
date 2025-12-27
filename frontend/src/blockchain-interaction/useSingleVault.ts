@@ -1,4 +1,4 @@
-import { Contract } from "ethers";
+import { Contract, formatEther, parseEther, parseUnits } from "ethers";
 import abis from "./helpers/abi";
 import getProvider from "./helpers/getProvider";
 
@@ -22,19 +22,21 @@ const useSingleVault = () => {
       provider
     );
 
-    const tokenURI = await NFTInstance.tokenURI(0);
-    const NFTName = await NFTInstance.name();
-    const NFTSymbol = await NFTInstance.symbol();
+    const tokenURI: string = await NFTInstance.tokenURI(0);
+    const NFTName: string = await NFTInstance.name();
+    const NFTSymbol: string = await NFTInstance.symbol();
 
-    const totalShares = 100;
-    const soldShares = 82;
-    const floorPrice = "15.2 ETH";
+    const totalShareHolders: string = formatEther(
+      await VaultInstance.shareHoldersCount()
+    );
+    const soldShares = formatEther(await VaultInstance.totalSupply());
+    const floorPrice = (await VaultInstance.updatedETHPrice()) * 1000n;
 
     return {
-      tokenURI: tokenURI,
+      tokenURI,
       NFTName,
       NFTSymbol,
-      totalShares,
+      totalShareHolders,
       soldShares,
       floorPrice,
     };

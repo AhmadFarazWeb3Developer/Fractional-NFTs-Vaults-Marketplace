@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 // };
 
 const useAllVaults = () => {
-  const [allVaults, setVaults] = useState<[] | undefined>();
+  const [allVaults, setVaults] = useState<string[] | undefined>();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

@@ -149,7 +149,7 @@ contract FractionalNftVault is
 
         numberOfRequiredTokens = (_numberSharesToBuy * TOKENS_PER_SHARE) / 1e18;
 
-        uint256 currentETHPerToken = _updatedETHPrice();
+        uint256 currentETHPerToken = updatedETHPrice();
         requiredETH = (currentETHPerToken * numberOfRequiredTokens) / 1e18;
     }
 
@@ -170,7 +170,7 @@ contract FractionalNftVault is
 
     /// @notice Calculate updated ETH price per token
     /// @return New ETH price per token
-    function _updatedETHPrice() internal view returns (uint256) {
+    function updatedETHPrice() public view returns (uint256) {
         uint256 percentageIncrease = (BASE_ETH_PER_TOKEN * shareHoldersCount) /
             1000;
         return BASE_ETH_PER_TOKEN + percentageIncrease;

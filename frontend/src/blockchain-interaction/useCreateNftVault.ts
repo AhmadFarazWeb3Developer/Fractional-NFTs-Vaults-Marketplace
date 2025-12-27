@@ -10,8 +10,12 @@ const useCreateNFTVault = () => {
   const createNFTVault = async (nftName: string, nftSymbol: string) => {
     if (!address) return;
 
+    console.log(nftName);
+    console.log(nftSymbol);
+
     try {
       const instances = await writeInstances();
+      console.log(instances);
       if (!instances) return;
 
       const { factoryInstance } = instances;
@@ -39,7 +43,9 @@ const useCreateNFTVault = () => {
         throw new Error("Backend failed to store vault");
       }
 
-      toast.success("Vault created!");
+      toast.success("Vault created!", {
+        action: { label: "Close", onClick: () => {} },
+      });
 
       console.log(receipt);
 
