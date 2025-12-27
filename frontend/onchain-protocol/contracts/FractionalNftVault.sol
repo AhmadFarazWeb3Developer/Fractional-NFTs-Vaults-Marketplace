@@ -31,6 +31,10 @@ contract FractionalNftVault is
     FractionalNFT public immutable nftContract;
     address public immutable factory;
 
+    address[] public shareholders;
+    mapping(address => uint256) private shareholderIndex;
+    mapping(address => bool) public isShareholder;
+
     /// @notice Thrown when user sends less ETH than required
     error RequiredETHForTokens(uint256 passedValue, uint256 requiredValue);
 
@@ -76,7 +80,15 @@ contract FractionalNftVault is
         ) = _calculateSharesPrice(_numberSharesToBuy);
 
         // CHECKS
-        if (balanceOf(_msgSender()) == 0) {
+        // if (balanceOf(_msgSender()) == 0) {
+        //     shareHoldersCount++;
+        // }
+
+        // CHECKS
+        if (!isShareholder[_msgSender()]) {
+            isShareholder[_msgSender()] = true;
+            shareholderIndex[_msgSender()] = shareholders.length;
+            shareholders.push(_msgSender());
             shareHoldersCount++;
         }
 
@@ -111,7 +123,24 @@ contract FractionalNftVault is
 
         // EFFECTS
         _burn(_msgSender(), requiredTokens);
+
+        // if (balanceOf(_msgSender()) == 0) {
+        //     shareHoldersCount--;
+        // }
+
         if (balanceOf(_msgSender()) == 0) {
+            uint256 index = shareholderIndex[_msgSender()];
+            uint256 lastIndex = shareholders.length - 1;
+
+            if (index != lastIndex) {
+                address lastHolder = shareholders[lastIndex];
+                shareholders[index] = lastHolder;
+                shareholderIndex[lastHolder] = index;
+            }
+
+            shareholders.pop();
+            delete shareholderIndex[_msgSender()];
+            delete isShareholder[_msgSender()];
             shareHoldersCount--;
         }
 
@@ -163,6 +192,10 @@ contract FractionalNftVault is
 
         // EFFECTS
         _burn(_msgSender(), balanceOf(_msgSender()));
+
+        // shareHoldersCount = 0
+
+        delete shareholders;
         shareHoldersCount = 0;
         // INTERACTIONS
         nftContract.safeTransferFrom(address(this), _to, 0);

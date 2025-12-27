@@ -1,6 +1,6 @@
 import Footer from "@/components/Footer";
 import Navbar from "../components/NavBar";
-import { ChartBar, PieChartIcon, Users } from "lucide-react";
+import { PieChartIcon, Users, Vault } from "lucide-react";
 
 import {
   PieChart,
@@ -10,35 +10,55 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
-import useSingleVault from "@/blockchain-interaction/useSingleVault";
+
 import { useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+
+import { VaultType } from "@/types/Vault";
+
+type LocationState = {
+  vault: VaultType;
+};
 
 const SingleVaultPage = () => {
-  const vault = {
-    name: "Azuki #9605",
-    symbol: "AZK",
-    image: "https://images.unsplash.com/photo-1634973357973-f2ed2657db3c?w=600",
-    vaultAddress: "0x1234567890abcdef1234567890abcdef12345678",
-    owner: "0xOWNERADDRESS1234567890",
-    totalShares: 100,
-    shareholders: [
-      { address: "0xAAA...111", shares: 40 },
-      { address: "0xBBB...222", shares: 30 },
-      { address: "0xCCC...333", shares: 20 },
-      { address: "0xDDD...444", shares: 10 },
-    ],
-  };
+  // const vault = {
+  //   name: "Azuki #9605",
+  //   symbol: "AZK",
+  //   image: "https://images.unsplash.com/photo-1634973357973-f2ed2657db3c?w=600",
+  //   vaultAddress: "0x1234567890abcdef1234567890abcdef12345678",
+  //   owner: "0xOWNERADDRESS1234567890",
+  //   totalShares: 100,
+  //   shareholders: [
+  //     { address: "0xAAA...111", shares: 40 },
+  //     { address: "0xBBB...222", shares: 30 },
+  //     { address: "0xCCC...333", shares: 20 },
+  //     { address: "0xDDD...444", shares: 10 },
+  //   ],
+  // };
+
   const COLORS = ["#21e786", "#00bfff", "#ff6347", "#ffa500"];
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  const { singleVault } = useSingleVault();
+  const state = location.state as LocationState | null;
 
-  useEffect(() => {
-    const init = async () => {
-      await singleVault("0xB7A5bd0345EF1Cc5E66bf61BdeC17D2461fBd968");
-    };
+  if (!state?.vault) {
+    navigate("/");
+    return null;
+  }
+  const {
+    vaultAddress,
+    vaultOwner,
+    tokenURI,
+    NFTName,
+    NFTSymbol,
+    totalShareHolders,
+    soldShares,
+    floorPrice,
+    allShareholderData,
+  } = state.vault;
 
-    init();
-  });
+  console.log(vaultAddress);
 
   return (
     <div>
@@ -48,27 +68,33 @@ const SingleVaultPage = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
           <div className="relative h-80">
             <img
-              src={vault.image}
-              alt={vault.name}
+              src={tokenURI.slice(0, -1)}
+              alt={NFTName}
               className="w-full h-full object-cover"
             />
           </div>
 
           <div className="space-y-4">
-            <h1 className="text-4xl">{vault.name}</h1>
-            <p className="text-lg text-white/80">Symbol: {vault.symbol}</p>
+            <h1 className="text-4xl">{NFTName}</h1>
+            <p className="text-lg text-white/80">{NFTSymbol.toUpperCase()}</p>
             <p className="text-sm text-white/60">
-              Vault Address:{" "}
-              <span className="font-mono">{vault.vaultAddress}</span>
+              Vault Address: <span className="font-mono">{vaultAddress}</span>
             </p>
             <p className="text-sm text-white/60">
-              Vault Owner: <span className="font-mono">{vault.owner}</span>
+              Vault Owner: <span className="font-mono">{vaultOwner}</span>
             </p>
-            <p className="text-lg">Total Shares: {vault.totalShares}</p>
+            <p className="text-lg">Total Shares: {soldShares}</p>
 
             <div className="flex gap-4 mt-4">
-              <button className="w-1/2 bg-[#21e786] text-black py-3 cursor-pointer border border-black">
-                Deposit
+              <button
+                onClick={() =>
+                  navigate("/single-vault/BuyShares", {
+                    state: { vaultAddress },
+                  })
+                }
+                className="w-1/2 bg-[#21e786] text-black py-3 cursor-pointer border border-black"
+              >
+                Buy
               </button>
               <button className="w-1/2 bg-[#21e786] text-black py-3 cursor-pointer border border-black">
                 Withdraw
@@ -91,14 +117,16 @@ const SingleVaultPage = () => {
                 </tr>
               </thead>
               <tbody>
-                {vault.shareholders.map((s, idx) => {
+                {allShareholderData.map((s, idx) => {
                   const percentage = (
-                    (s.shares / vault.totalShares) *
+                    (parseInt(soldShares) / 100) *
                     100
                   ).toFixed(2);
                   return (
                     <tr key={idx} className={idx % 2 === 0 ? "bg-white/5" : ""}>
-                      <td className="px-4 py-2 font-poppins">{s.address}</td>
+                      <td className="px-4 py-2 font-poppins">
+                        {s.shareholder}
+                      </td>
                       <td className="px-4 py-2 font-poppins">{s.shares}</td>
                       <td className="px-4 py-2 font-poppins">
                         <div className="h-2 w-full bg-white/10 overflow-hidden">
@@ -138,8 +166,8 @@ const SingleVaultPage = () => {
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
-                  data={vault.shareholders.map((s) => ({
-                    name: s.address,
+                  data={allShareholderData.map((s) => ({
+                    name: s.shareholder,
                     value: s.shares,
                   }))}
                   dataKey="value"
@@ -161,7 +189,7 @@ const SingleVaultPage = () => {
                     </text>
                   )}
                 >
-                  {vault.shareholders.map((_, idx) => (
+                  {allShareholderData.map((_, idx) => (
                     <Cell key={idx} fill={COLORS[idx % COLORS.length]} />
                   ))}
                 </Pie>

@@ -1,42 +1,37 @@
 import { Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import useAllVaults from "../blockchain-interaction/useAllVaults";
-import useSingleVault from "@/blockchain-interaction/useSingleVault";
+import useVaultsAddresses from "../blockchain-interaction/useVaultsAddresses";
 import { formatEther } from "ethers";
 
-type VaultType = {
-  tokenURI: string;
-  NFTName: string;
-  NFTSymbol: string;
-  totalShareHolders: string;
-  soldShares: string;
-  floorPrice: string;
-};
+import { VaultType, VaultAddress } from "../types/Vault";
+import useSingleVault from "@/blockchain-interaction/useSingleVault";
 
 const ExploreVaultsPage = () => {
   const navigate = useNavigate();
 
   const [vaults, setVaults] = useState<VaultType[]>([]);
 
-  const { allVaults } = useAllVaults();
-  const { singleVault } = useSingleVault();
+  const { allVaultsAddresses } = useVaultsAddresses();
+  const { getSingleVault } = useSingleVault();
 
   useEffect(() => {
     const init = async () => {
-      if (!allVaults) return;
+      if (!allVaultsAddresses) return;
 
       const allData = await Promise.all(
-        allVaults.map(
-          async (vault: string) => await singleVault(vault.vaultAddress)
+        allVaultsAddresses.map(
+          async (vaultAddress: VaultAddress) =>
+            await getSingleVault(vaultAddress?.vaultAddress)
         )
       );
-
       setVaults(allData);
+
+      console.log("all data : ", allData);
     };
 
     init();
-  }, [allVaults]);
+  }, [allVaultsAddresses]);
 
   return (
     <div className="min-h-screen bg-black px-6 lg:px-12 py-20 text-white">
@@ -57,10 +52,13 @@ const ExploreVaultsPage = () => {
           const progress = Math.round((parseInt(vault.soldShares) / 100) * 100);
 
           return (
-            <div className="bg-black border border-white/15 overflow-hidden">
+            <div
+              key={vault.vaultAddress}
+              className="bg-black border border-white/15 overflow-hidden"
+            >
               <div className="h-[220px] relative">
                 <img
-                  src={vault.tokenURI}
+                  src={vault.tokenURI.slice(0, -1)}
                   alt={vault.NFTName}
                   className="w-full h-full object-cover"
                 />
@@ -98,7 +96,9 @@ const ExploreVaultsPage = () => {
                 </div>
 
                 <button
-                  onClick={() => navigate("/single-vault")}
+                  onClick={() =>
+                    navigate("/single-vault", { state: { vault } })
+                  }
                   className="w-full bg-[#21e786] text-black py-3  cursor-pointer border border-black"
                 >
                   View Vault

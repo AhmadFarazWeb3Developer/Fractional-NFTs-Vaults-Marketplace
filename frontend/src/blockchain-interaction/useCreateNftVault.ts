@@ -30,17 +30,16 @@ const useCreateNFTVault = () => {
 
       const { factoryInstance } = instances;
 
-      const { ipfsLink } = await uploadNFTImage(image);
+      const { ipfsLink: nftUri } = await uploadNFTImage(image);
 
-      console.log(ipfsLink);
-      // const tx = await factoryInstance.createNftVault(
-      //   nftName,
-      //   nftSymbol,
-      //   nftUri
-      // );
+      const tx = await factoryInstance.createNftVault(
+        nftName,
+        nftSymbol,
+        nftUri
+      );
 
-      // const receipt = await tx.wait();
-      // if (!receipt) return;
+      const receipt = await tx.wait();
+      if (!receipt) return;
 
       const vaultAddress = await factoryInstance.vaults(address);
 

@@ -1,19 +1,15 @@
 import { useEffect, useState } from "react";
 
-// type Vault = {
-//   _id: string;
-//   nftAddress: string;
-//   totalShares: number;
-//   soldShares: number;
-//   pricePerShare: string;
-// };
+import { VaultAddress } from "../types/Vault";
 
-const useAllVaults = () => {
-  const [allVaults, setVaults] = useState<string[] | undefined>();
+const useVaultsAddresses = () => {
+  const [allVaultsAddresses, setVaultsAddresses] = useState<
+    VaultAddress[] | undefined
+  >();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const allVaults = async () => {
+    const allVaultsAddresses = async () => {
       try {
         const response = await fetch(
           `${import.meta.env.VITE_SERVER_URL_V1}/get-all-vaults/`
@@ -23,7 +19,7 @@ const useAllVaults = () => {
 
         console.log("data : ", data);
         if (response.status === 201) {
-          setVaults(data);
+          setVaultsAddresses(data);
         }
       } catch (err) {
         console.error(err);
@@ -32,10 +28,10 @@ const useAllVaults = () => {
       }
     };
 
-    allVaults();
+    allVaultsAddresses();
   }, []);
 
-  return { allVaults, loading };
+  return { allVaultsAddresses, loading };
 };
 
-export default useAllVaults;
+export default useVaultsAddresses;
