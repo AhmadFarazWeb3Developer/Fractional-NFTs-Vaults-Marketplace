@@ -32,7 +32,6 @@ const CreateVaultPage = () => {
 
       <div className="min-h-screen bg-black flex items-center  px-6 text-white">
         <div className="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-12 ">
-          {/* LEFT — FORM */}
           <div className="space-y-6">
             <h1 className="text-3xl font-bakbak">Create Vault</h1>
 
@@ -67,9 +66,11 @@ const CreateVaultPage = () => {
                   <p>Creating Vault...</p>
                 </div>
               ) : (
-                "Create Vault"
+                <div className=" flex gap-2">
+                  <p>Create Vault</p>
+                  <ArrowRight size={18} />
+                </div>
               )}
-              <ArrowRight size={18} />
             </button>
           </div>
 

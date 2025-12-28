@@ -11,7 +11,7 @@ import ExploreVaultsPage from "./pages/ExploreVaultsPage.js";
 import CreateVaultPage from "./pages/CreateVaultPage.js";
 import SingleVaultPage from "./pages/SingleVaultPage.js";
 import BuySharesPage from "./pages/BuySharesPage.js";
-
+import WithdrawSharesPage from "./pages/WithdrawSharesPage.js";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -22,7 +22,11 @@ const router = createBrowserRouter([
       { path: "/explore-vaults", element: <ExploreVaultsPage /> },
       { path: "/create-vault", element: <CreateVaultPage /> },
       { path: "/single-vault", element: <SingleVaultPage /> },
-      { path: "/single-vault/BuyShares", element: <BuySharesPage /> },
+      { path: "/single-vault/buy-shares", element: <BuySharesPage /> },
+      {
+        path: "/single-vault/withdraw-shares",
+        element: <WithdrawSharesPage />,
+      },
     ],
   },
 ]);

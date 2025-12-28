@@ -1,13 +1,13 @@
 import { useState } from "react";
-import { parseEther } from "ethers";
 import Navbar from "@/components/NavBar";
 import useBuyShares from "@/blockchain-interaction/useBuyShares";
 import { useLocation, useNavigate } from "react-router-dom";
 import { VaultAddress } from "@/types/Vault";
+import { Loader, ShoppingCart } from "lucide-react";
 
 const BuySharesPage = () => {
-  const [numberSharesToBuy, setNumberSharesToBuy] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [numberOfSharesToBuy, setNumberOfSharesToBuy] = useState("");
+
   const navigate = useNavigate();
   const location = useLocation();
   const state = location.state as VaultAddress | null;
@@ -17,13 +17,17 @@ const BuySharesPage = () => {
     return null;
   }
 
-  const { buyShares } = useBuyShares();
+  const { buyShares, loading } = useBuyShares();
   const handleBuyShares = async () => {
-    await buyShares(numberSharesToBuy, state.vaultAddress);
+    const result = await buyShares(numberOfSharesToBuy, state?.vaultAddress);
+
+    if (result === true) {
+      navigate("/explore-vaults");
+    }
   };
 
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen  bg-black">
       <Navbar />
 
       <div className="flex justify-center items-center px-4 mt-20">
@@ -34,8 +38,8 @@ const BuySharesPage = () => {
             <label className="text-sm text-white/60">Number of Shares</label>
             <input
               placeholder="e.g. 1.5"
-              value={numberSharesToBuy}
-              onChange={(e) => setNumberSharesToBuy(e.target.value)}
+              value={numberOfSharesToBuy}
+              onChange={(e) => setNumberOfSharesToBuy(e.target.value)}
               className="w-full bg-transparent border border-white/20 px-4 py-3 outline-none text-white"
             />
           </div>
@@ -45,7 +49,17 @@ const BuySharesPage = () => {
             disabled={loading}
             className="w-full bg-[#21e786] text-black py-3 cursor-pointer border border-black disabled:opacity-50"
           >
-            {loading ? "Buying..." : "Buy Shares"}
+            {loading ? (
+              <div className=" flex gap-2 items-center justify-center">
+                <Loader className="animate-spin " />
+                <p>Buying...</p>
+              </div>
+            ) : (
+              <div className=" flex gap-2 items-center justify-center">
+                <p>Buy Shares</p>
+                <ShoppingCart size={18} strokeWidth={3} />
+              </div>
+            )}
           </button>
         </div>
       </div>

@@ -1,52 +1,19 @@
-import { Plus } from "lucide-react";
-import { useEffect, useState } from "react";
+import { ArrowUpRight } from "lucide-react";
+
 import { useNavigate } from "react-router-dom";
-import useVaultsAddresses from "../blockchain-interaction/useVaultsAddresses";
+
 import { formatEther } from "ethers";
+import { VaultType } from "@/types/Vault";
 
-import { VaultType, VaultAddress } from "../types/Vault";
-import useSingleVault from "@/blockchain-interaction/useSingleVault";
+interface AllVaultsProps {
+  vaults: VaultType[];
+}
 
-const ExploreVaultsPage = () => {
+const AllVaults = ({ vaults }: AllVaultsProps) => {
   const navigate = useNavigate();
 
-  const [vaults, setVaults] = useState<VaultType[]>([]);
-
-  const { allVaultsAddresses } = useVaultsAddresses();
-  const { getSingleVault } = useSingleVault();
-
-  useEffect(() => {
-    const init = async () => {
-      if (!allVaultsAddresses) return;
-
-      const allData = await Promise.all(
-        allVaultsAddresses.map(
-          async (vaultAddress: VaultAddress) =>
-            await getSingleVault(vaultAddress?.vaultAddress)
-        )
-      );
-      setVaults(allData);
-
-      console.log("all data : ", allData);
-    };
-
-    init();
-  }, [allVaultsAddresses]);
-
   return (
-    <div className="min-h-screen bg-black px-6 lg:px-12 py-20 text-white">
-      <div className="flex justify-between items-center mb-12">
-        <h1 className="text-4xl font-bakbak">Explore Vaults</h1>
-
-        <button
-          onClick={() => navigate("/create-vault")}
-          className="flex items-center gap-2 bg-[#21e786] text-black px-6 py-3 border border-black  cursor-pointer"
-        >
-          <Plus size={18} />
-          Create Vault
-        </button>
-      </div>
-
+    <>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {vaults.map((vault) => {
           const progress = Math.round((parseInt(vault.soldShares) / 100) * 100);
@@ -83,8 +50,9 @@ const ExploreVaultsPage = () => {
                 <div>
                   <div className="flex justify-between text-xs mb-1">
                     <span className="text-white/40">Progress</span>
-                    <span>
-                      {vault.soldShares} / {100}
+                    <span className=" ">
+                      {100 - Number(vault.soldShares)} / {100}
+                      <p className=" font-poppins text-white/40"> Remaining</p>
                     </span>
                   </div>
                   <div className="h-2 border border-white/10 bg-white/10">
@@ -99,17 +67,18 @@ const ExploreVaultsPage = () => {
                   onClick={() =>
                     navigate("/single-vault", { state: { vault } })
                   }
-                  className="w-full bg-[#21e786] text-black py-3  cursor-pointer border border-black"
+                  className="w-full flex items-center justify-center gap-1 bg-[#21e786] text-black py-3  cursor-pointer border border-black"
                 >
                   View Vault
+                  <ArrowUpRight size={22} strokeWidth={2.5} />
                 </button>
               </div>
             </div>
           );
         })}
       </div>
-    </div>
+    </>
   );
 };
 
-export default ExploreVaultsPage;
+export default AllVaults;

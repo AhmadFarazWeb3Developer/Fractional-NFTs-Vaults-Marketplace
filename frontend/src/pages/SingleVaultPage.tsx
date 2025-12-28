@@ -1,6 +1,13 @@
 import Footer from "@/components/Footer";
 import Navbar from "../components/NavBar";
-import { PieChartIcon, Vault, Users, Crown } from "lucide-react";
+import {
+  PieChartIcon,
+  Vault,
+  Users,
+  Crown,
+  ShoppingCartIcon,
+  ArrowUpRight,
+} from "lucide-react";
 
 import {
   PieChart,
@@ -52,7 +59,7 @@ const SingleVaultPage = () => {
       <div className="min-h-screen bg-black text-white py-8">
         {/* NFT & Info Section */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-          <div className="relative h-80">
+          <div className="relative h-80 border-1 border-white/15 ">
             <img
               src={tokenURI.slice(0, -1)}
               alt={NFTName}
@@ -74,21 +81,30 @@ const SingleVaultPage = () => {
 
             <p className="text-lg">Total Shares: {soldShares}</p>
             <p className="text-lg">Floor Price: {formatEther(floorPrice)}</p>
-
-            <div className="flex gap-4 mt-4">
-              <button
+            <div className=" flex  gap-6">
+              <div
                 onClick={() =>
-                  navigate("/single-vault/BuyShares", {
+                  navigate("/single-vault/buy-shares", {
                     state: { vaultAddress },
                   })
                 }
-                className="w-1/2 bg-[#21e786] text-black py-3 cursor-pointer border border-black"
+                className="w-1/2 flex items-center justify-center gap-2 bg-[#21e786] text-black py-3 cursor-pointer "
               >
-                Buy
-              </button>
-              <button className="w-1/2 bg-[#21e786] text-black py-3 cursor-pointer border border-black">
-                Withdraw
-              </button>
+                <p>Buy</p>
+                <ShoppingCartIcon size={16} strokeWidth={3} />
+              </div>
+
+              <div
+                onClick={() =>
+                  navigate("/single-vault/withdraw-shares", {
+                    state: { vaultAddress },
+                  })
+                }
+                className="w-1/2 flex items-center justify-center gap-1 bg-[#21e786] text-black py-3 cursor-pointer "
+              >
+                <p className="">Withdraw</p>
+                <ArrowUpRight size={16} strokeWidth={3} />
+              </div>
             </div>
           </div>
         </div>
