@@ -84,7 +84,7 @@ const ExploreVaultsPage = () => {
                   <div className="flex justify-between text-xs mb-1">
                     <span className="text-white/40">Progress</span>
                     <span>
-                      {vault.soldShares} / {vault.totalShareHolders}
+                      {vault.soldShares} / {100}
                     </span>
                   </div>
                   <div className="h-2 border border-white/10 bg-white/10">

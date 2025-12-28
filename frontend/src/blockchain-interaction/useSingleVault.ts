@@ -8,8 +8,6 @@ const useSingleVault = () => {
   const getSingleVault = async (vaultAddress: string) => {
     const provider = getProvider(31337);
 
-    console.log("vault address : ", vaultAddress);
-
     const { fractionalNftVaultAbi, fractionalNFTAbi } = abis();
 
     const VaultInstance = new Contract(
@@ -21,15 +19,17 @@ const useSingleVault = () => {
     const NFTContractAddress = await VaultInstance.nftContract();
 
     const shareholdersCount = await VaultInstance.shareHoldersCount();
-    // console.log(parseInt(shareholdersCount));
     let allShareholderData: shareholdersType[] = [];
+
+    const TOKENS_PER_SHARE = 1000n * 10n ** 18n;
 
     for (let i = 0; i < parseInt(shareholdersCount); i++) {
       const shareholder: string = await VaultInstance.shareholders(i);
-      console.log("share holder : ", shareholder);
+      const tokens = await VaultInstance.balanceOf(shareholder);
+
       allShareholderData.push({
         shareholder,
-        shares: await VaultInstance.balanceOf(shareholder),
+        shares: (tokens / TOKENS_PER_SHARE).toString(),
       });
     }
 
@@ -45,7 +45,7 @@ const useSingleVault = () => {
     const NFTSymbol: string = await NFTInstance.symbol();
 
     const totalShareHolders: string = formatEther(shareholdersCount);
-    const soldShares = formatEther(await VaultInstance.totalSupply());
+    const soldShares = formatEther((await VaultInstance.totalSupply()) / 1000n);
     const floorPrice = (await VaultInstance.updatedETHPrice()) * 1000n;
 
     return {

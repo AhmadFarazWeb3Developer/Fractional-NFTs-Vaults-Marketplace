@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { ArrowRight, Upload } from "lucide-react";
+import { ArrowRight, Loader, Upload } from "lucide-react";
 import useCreateNFTVault from "../blockchain-interaction/useCreateNftVault";
 import Navbar from "@/components/NavBar";
+import { useNavigate } from "react-router-dom";
 
 const CreateVaultPage = () => {
   const [nftName, setNftName] = useState("");
@@ -9,6 +10,7 @@ const CreateVaultPage = () => {
   const [loading, setLoading] = useState(false);
   const [image, setImage] = useState<File | null>(null);
 
+  const navigate = useNavigate();
   const { createNFTVault } = useCreateNFTVault();
 
   const handleCreateVault = async () => {
@@ -20,6 +22,7 @@ const CreateVaultPage = () => {
       setNftName("");
       setNftSymbol("");
       setImage(null);
+      navigate("/explore-vaults");
     }
   };
 
@@ -58,7 +61,14 @@ const CreateVaultPage = () => {
               disabled={loading}
               className="w-full bg-[#21e786] text-black py-4 flex items-center justify-center gap-2 cursor-pointer border border-black"
             >
-              {loading ? "Creating Vault..." : "Create Vault"}
+              {loading ? (
+                <div className=" flex gap-2">
+                  <Loader className="animate-spin " />
+                  <p>Creating Vault...</p>
+                </div>
+              ) : (
+                "Create Vault"
+              )}
               <ArrowRight size={18} />
             </button>
           </div>

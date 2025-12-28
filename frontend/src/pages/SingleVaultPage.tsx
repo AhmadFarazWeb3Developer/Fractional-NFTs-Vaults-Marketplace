@@ -1,6 +1,6 @@
 import Footer from "@/components/Footer";
 import Navbar from "../components/NavBar";
-import { PieChartIcon, Users, Vault } from "lucide-react";
+import { PieChartIcon, Vault, Users, Crown } from "lucide-react";
 
 import {
   PieChart,
@@ -11,32 +11,17 @@ import {
   Legend,
 } from "recharts";
 
-import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import { VaultType } from "@/types/Vault";
+import { formatEther, parseEther } from "ethers";
+import { COLORS } from "@/lib/COLORS";
 
 type LocationState = {
   vault: VaultType;
 };
 
 const SingleVaultPage = () => {
-  // const vault = {
-  //   name: "Azuki #9605",
-  //   symbol: "AZK",
-  //   image: "https://images.unsplash.com/photo-1634973357973-f2ed2657db3c?w=600",
-  //   vaultAddress: "0x1234567890abcdef1234567890abcdef12345678",
-  //   owner: "0xOWNERADDRESS1234567890",
-  //   totalShares: 100,
-  //   shareholders: [
-  //     { address: "0xAAA...111", shares: 40 },
-  //     { address: "0xBBB...222", shares: 30 },
-  //     { address: "0xCCC...333", shares: 20 },
-  //     { address: "0xDDD...444", shares: 10 },
-  //   ],
-  // };
-
-  const COLORS = ["#21e786", "#00bfff", "#ff6347", "#ffa500"];
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -46,6 +31,7 @@ const SingleVaultPage = () => {
     navigate("/");
     return null;
   }
+
   const {
     vaultAddress,
     vaultOwner,
@@ -77,13 +63,17 @@ const SingleVaultPage = () => {
           <div className="space-y-4">
             <h1 className="text-4xl">{NFTName}</h1>
             <p className="text-lg text-white/80">{NFTSymbol.toUpperCase()}</p>
-            <p className="text-sm text-white/60">
-              Vault Address: <span className="font-mono">{vaultAddress}</span>
-            </p>
-            <p className="text-sm text-white/60">
-              Vault Owner: <span className="font-mono">{vaultOwner}</span>
-            </p>
+            <div className=" flex items-center gap-2   text-white/60  font-poppins">
+              <Vault strokeWidth={1} />
+              <p className="text-sm text-white/60">{vaultAddress}</p>
+            </div>
+            <div className=" flex items-center gap-2   text-white/60  font-poppins">
+              <Crown strokeWidth={1} />
+              <p className="text-sm text-white/60">{vaultOwner}</p>
+            </div>
+
             <p className="text-lg">Total Shares: {soldShares}</p>
+            <p className="text-lg">Floor Price: {formatEther(floorPrice)}</p>
 
             <div className="flex gap-4 mt-4">
               <button
@@ -116,19 +106,20 @@ const SingleVaultPage = () => {
                   <th className="px-4 py-3 text-left">Percentage</th>
                 </tr>
               </thead>
-              <tbody>
+
+              <tbody className="font-poppins">
                 {allShareholderData.map((s, idx) => {
                   const percentage = (
-                    (parseInt(soldShares) / 100) *
+                    (Number(s.shares) / Number(soldShares)) *
                     100
                   ).toFixed(2);
                   return (
                     <tr key={idx} className={idx % 2 === 0 ? "bg-white/5" : ""}>
-                      <td className="px-4 py-2 font-poppins">
-                        {s.shareholder}
+                      <td className="px-4 py-2 ">
+                        {s.shareholder.toLowerCase()}
                       </td>
-                      <td className="px-4 py-2 font-poppins">{s.shares}</td>
-                      <td className="px-4 py-2 font-poppins">
+                      <td className="px-4 py-2 ">{s.shares}</td>
+                      <td className="px-4 py-2 ">
                         <div className="h-2 w-full bg-white/10 overflow-hidden">
                           <div
                             className="h-full"
@@ -168,7 +159,7 @@ const SingleVaultPage = () => {
                 <Pie
                   data={allShareholderData.map((s) => ({
                     name: s.shareholder,
-                    value: s.shares,
+                    value: Number(s.shares),
                   }))}
                   dataKey="value"
                   nameKey="name"
@@ -178,16 +169,20 @@ const SingleVaultPage = () => {
                   innerRadius={30}
                   paddingAngle={3}
                   labelLine={false}
-                  label={({ name, percent }) => (
-                    <text
-                      className="font-bakbak text-white text-sm"
-                      fill="#fff"
-                      fontWeight={700}
-                      style={{ textShadow: "1px 1px 3px rgba(0,0,0,0.5)" }}
-                    >
-                      {`${name}: ${(percent * 100).toFixed(0)}%`}
-                    </text>
-                  )}
+                  label={({ name, percent }) => {
+                    const safePercent = percent ?? 0;
+
+                    return (
+                      <text
+                        className="font-bakbak text-white text-sm"
+                        fill="#fff"
+                        fontWeight={700}
+                        style={{ textShadow: "1px 1px 3px rgba(0,0,0,0.5)" }}
+                      >
+                        {`${name}: ${(safePercent * 100).toFixed(0)}%`}
+                      </text>
+                    );
+                  }}
                 >
                   {allShareholderData.map((_, idx) => (
                     <Cell key={idx} fill={COLORS[idx % COLORS.length]} />
@@ -195,13 +190,9 @@ const SingleVaultPage = () => {
                 </Pie>
 
                 <Tooltip
-                  formatter={(value: number, name: string) => [
-                    `${value} shares`,
-                    name,
-                  ]}
+                  formatter={(value) => [`${value ?? 0} shares`]}
                   contentStyle={{
                     backgroundColor: "#21e786",
-                    // borderRadius: 12,
                     border: "1px solid #000000",
                     color: "#fff",
                     fontFamily: "poppins",
@@ -209,7 +200,7 @@ const SingleVaultPage = () => {
                   }}
                 />
 
-                <Legend
+                {/* <Legend
                   verticalAlign="bottom"
                   align="center"
                   wrapperStyle={{
@@ -218,12 +209,13 @@ const SingleVaultPage = () => {
                     fontSize: 12,
                     marginTop: 8,
                   }}
-                />
+                /> */}
               </PieChart>
             </ResponsiveContainer>
           </div>
         </div>
       </div>
+
       <Footer />
     </div>
   );
