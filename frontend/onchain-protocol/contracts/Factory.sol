@@ -14,7 +14,7 @@ import {FractionalNftVault} from "./FractionalNftVault.sol";
 
 contract FractionalNFTsVaultsMarketplaceFactory is Context, Ownable {
     /// @dev Maps vault Owner → deployed vault
-    mapping(address => address) public vaults;
+    mapping(address => address) public vaults; //@audit high ?
 
     /// @dev Tracks uniqueness of NFT names
     mapping(string => bool) private nftNames;

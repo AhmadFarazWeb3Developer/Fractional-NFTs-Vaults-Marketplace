@@ -34,7 +34,7 @@ const BuySharesPage = () => {
   };
 
   return (
-    <div className="min-h-screen  bg-black">
+    <div className="min-h-screen bg-black">
       <Navbar />
 
       <div className="flex justify-center items-center px-4 mt-20">
