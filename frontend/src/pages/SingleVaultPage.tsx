@@ -19,6 +19,7 @@ import { COLORS } from "@/lib/COLORS";
 import VaultContext from "@/context/VaultContext";
 import useSingleVault from "@/blockchain-interaction/useSingleVault";
 import { useParams } from "react-router-dom";
+import VaultShareChart from "@/components/VaultShareChart";
 
 const SingleVaultPage = () => {
   const vaultContext = useContext(VaultContext);
@@ -171,6 +172,8 @@ const SingleVaultPage = () => {
               </tbody>
             </table>
           </div>
+
+          <VaultShareChart vaultAddress={vaultAddress} />
         </div>
 
         <div className="mt-8 flex flex-col md:flex-row items-center gap-6 bg-black border border-white/15 p-6">
@@ -231,17 +234,6 @@ const SingleVaultPage = () => {
                     padding: "10px 14px",
                   }}
                 />
-
-                {/* <Legend
-                  verticalAlign="bottom"
-                  align="center"
-                  wrapperStyle={{
-                    color: "#21e786",
-                    fontFamily: "poppins",
-                    fontSize: 12,
-                    marginTop: 8,
-                  }}
-                /> */}
               </PieChart>
             </ResponsiveContainer>
           </div>

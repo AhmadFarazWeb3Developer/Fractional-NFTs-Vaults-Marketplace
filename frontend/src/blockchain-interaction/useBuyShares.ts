@@ -4,6 +4,7 @@ import useSigner from "./helpers/useSigner";
 import { decodeError } from "./helpers/decodeError";
 import { useState } from "react";
 import { toast } from "sonner";
+import type { Log, LogDescription } from "ethers";
 
 const useBuyShares = () => {
   const { getSigner } = useSigner();
@@ -16,7 +17,6 @@ const useBuyShares = () => {
     try {
       setLoading(true);
       const { signer } = await getSigner();
-
       const { fractionalNftVaultAbi } = abis();
 
       const vaultInstance = new Contract(
@@ -25,26 +25,62 @@ const useBuyShares = () => {
         signer
       );
 
-      const shares = parseUnits(numberOfSharesToBuy, 18);
+      const sharesToBuy = parseUnits(numberOfSharesToBuy, 18);
 
-      const [requiredETH] = await vaultInstance._calculateSharesPrice(shares);
+      const [requiredETH] = await vaultInstance._calculateSharesPrice(
+        sharesToBuy
+      );
 
-      console.log(requiredETH);
-      const tx = await vaultInstance.buyShares(shares, { value: requiredETH });
+      const tx = await vaultInstance.buyShares(sharesToBuy, {
+        value: requiredETH,
+      });
       const receipt = await tx.wait();
-      console.log(receipt);
+
+      const iface = vaultInstance.interface;
+
+      const parsedLog: LogDescription | null =
+        receipt.logs
+          .map((log: Log): LogDescription | null => {
+            try {
+              return iface.parseLog(log);
+            } catch {
+              return null;
+            }
+          })
+          .find((e: LogDescription) => e?.name === "SharesBought") ?? null;
+
+      if (parsedLog) {
+        const vault = parsedLog.args.vault;
+        const buyer = parsedLog.args.buyer;
+        const shares = parsedLog.args.shares.toString();
+        const timestamp = parsedLog.args.timestamp.toNumber
+          ? parsedLog.args.timestamp.toNumber()
+          : Number(parsedLog.args.timestamp);
+
+        await fetch(`${import.meta.env.VITE_SERVER_URL_V1}/vault-event`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            vaultAddress: vault,
+            user: buyer,
+            sharesChange: shares,
+            type: "buy",
+            timestamp,
+          }),
+        });
+      }
 
       if (receipt) {
         toast.success(
-          `You bougth ${numberOfSharesToBuy} Shares for ${formatEther(
+          `You bought ${numberOfSharesToBuy} Shares for ${formatEther(
             requiredETH
           )} ETH`
         );
         return true;
       }
     } catch (error) {
-      setLoading(false);
       decodeError(error);
+      setLoading(false);
     } finally {
       setLoading(false);
     }

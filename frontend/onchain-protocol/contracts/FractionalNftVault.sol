@@ -50,6 +50,22 @@ contract FractionalNftVault is
     /// @notice Thrown when ETH sent directly
     error DirectETHTransferNotAllowed();
 
+    ///   @notice Emitted when shares are bought
+    event SharesBought(
+        address indexed vault,
+        address indexed buyer,
+        uint256 shares,
+        uint256 timestamp
+    );
+
+    /// @notice Emitted when shares are redeemed (sold)
+    event SharesRedeemed(
+        address indexed vault,
+        address indexed seller,
+        uint256 shares,
+        uint256 timestamp
+    );
+
     /// @param _nftContract Fractional NFT contract
     /// @param _initialOwner Owner of vault
     /// @param _factory Marketplace factory
@@ -102,6 +118,12 @@ contract FractionalNftVault is
             // INTERACTION
             Address.sendValue(payable(_msgSender()), excess);
         }
+        emit SharesBought(
+            address(this),
+            _msgSender(),
+            _numberSharesToBuy,
+            block.timestamp
+        );
     }
 
     /// @notice Redeem shares for ETH
@@ -149,6 +171,13 @@ contract FractionalNftVault is
         Address.sendValue(
             payable(_msgSender()),
             withdrawalValue - marketplaceFee
+        );
+
+        emit SharesRedeemed(
+            address(this),
+            _msgSender(),
+            _sharesToRedeem,
+            block.timestamp
         );
     }
 

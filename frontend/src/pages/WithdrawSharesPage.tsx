@@ -1,12 +1,20 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import useWithdrawShares from "@/blockchain-interaction/useWithdrawShares";
 import { useLocation, useNavigate } from "react-router-dom";
 import { VaultAddress } from "@/types/Vault";
 import { ArrowUpRight, Loader } from "lucide-react";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/NavBar";
+import VaultContext from "@/context/VaultContext";
 
 const WithdrawSharesPage = () => {
+  const [numberOfSharesToWithdraw, setNumberOfSharesToBuy] = useState("");
+
+  const vaultContext = useContext(VaultContext);
+  if (!vaultContext) throw new Error("VaultContext missing");
+
+  const { setAreVaultsChanged } = vaultContext;
+
   const navigate = useNavigate();
   const location = useLocation();
   const state = location.state as VaultAddress | null;
@@ -16,11 +24,17 @@ const WithdrawSharesPage = () => {
     return null;
   }
 
-  const [numberOfSharesToWithdraw, setNumberOfSharesToBuy] = useState("");
-
   const { withdrawShares, loading } = useWithdrawShares();
   const handleWithdrawShares = async () => {
-    await withdrawShares(numberOfSharesToWithdraw, state?.vaultAddress);
+    const result = await withdrawShares(
+      numberOfSharesToWithdraw,
+      state?.vaultAddress
+    );
+
+    if (result === true) {
+      setAreVaultsChanged(true);
+      navigate(`/single-vault/${state.vaultAddress}`);
+    }
   };
 
   return (
