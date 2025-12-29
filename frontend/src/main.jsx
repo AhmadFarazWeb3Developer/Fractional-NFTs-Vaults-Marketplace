@@ -7,7 +7,7 @@ import HomePage from "./pages/HomePage.js";
 import "./styles/global.css";
 import LearnMorePage from "./pages/LearnMorePage.js";
 
-import ExploreVaultsPage from "./pages/ExploreVaultsPage.js";
+import ExploreAllVaultsPage from "./pages/ExploreAllVaultsPage.js";
 import CreateVaultPage from "./pages/CreateVaultPage.js";
 import SingleVaultPage from "./pages/SingleVaultPage.js";
 import BuySharesPage from "./pages/BuySharesPage.js";
@@ -19,9 +19,9 @@ const router = createBrowserRouter([
     children: [
       { path: "/", element: <HomePage /> },
       { path: "/learn-more", element: <LearnMorePage /> },
-      { path: "/explore-vaults", element: <ExploreVaultsPage /> },
+      { path: "/explore-vaults", element: <ExploreAllVaultsPage /> },
       { path: "/create-vault", element: <CreateVaultPage /> },
-      { path: "/single-vault", element: <SingleVaultPage /> },
+      { path: "/single-vault/:vaultAddress", element: <SingleVaultPage /> },
       { path: "/single-vault/buy-shares", element: <BuySharesPage /> },
       {
         path: "/single-vault/withdraw-shares",

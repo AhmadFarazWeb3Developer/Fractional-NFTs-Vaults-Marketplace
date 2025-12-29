@@ -14,8 +14,8 @@ contract FractionalNFT is Ownable, ERC721 {
     /// @notice Address of the associated vault.
     address nftVault;
 
-    /// @notice Base URI for metadata.
-    string private baseURI = "VaultName/";
+    /// @notice URI for metadata.
+    string private baseURI = "";
 
     /// @notice Emitted when NFT vault is updated.
     /// @param calledBy Caller who triggered the update.
@@ -39,9 +39,11 @@ contract FractionalNFT is Ownable, ERC721 {
     constructor(
         address _initialOwner,
         string memory _nftName,
-        string memory _nftSymbol
+        string memory _nftSymbol,
+        string memory _nftURI
     ) ERC721(_nftName, _nftSymbol) Ownable(_initialOwner) {
         _mint(_initialOwner, 0);
+        baseURI = _nftURI;
     }
 
     /// @dev Ensures vault address is valid.
@@ -75,8 +77,8 @@ contract FractionalNFT is Ownable, ERC721 {
         return baseURI;
     }
 
-    /// @notice Updates base URI.
-    /// @param baseURI_ New base URI.
+    /// @notice Updates URI.
+    /// @param baseURI_ New URI.
     function setBaseURI(string memory baseURI_) external onlyOwner {
         baseURI = baseURI_;
     }

@@ -32,7 +32,8 @@ contract FractionalNFTsVaultsMarketplaceFactory is Context, Ownable {
     /// @return Address of the newly created vault
     function createNftVault(
         string memory _nftName,
-        string memory _nftSymbol
+        string memory _nftSymbol,
+        string memory _NftURI
     ) external returns (address) {
         // No Duplication of name and symbol
         if (nftNames[_nftName] || nftSymbols[_nftSymbol]) {
@@ -42,7 +43,8 @@ contract FractionalNFTsVaultsMarketplaceFactory is Context, Ownable {
         FractionalNFT nft = new FractionalNFT(
             _msgSender(),
             _nftName,
-            _nftSymbol
+            _nftSymbol,
+            _NftURI
         );
 
         FractionalNftVault vault = new FractionalNftVault(

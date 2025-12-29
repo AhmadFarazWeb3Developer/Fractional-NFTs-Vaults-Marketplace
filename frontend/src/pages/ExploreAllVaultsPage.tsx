@@ -1,16 +1,21 @@
 import { Plus } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useVaultsAddresses from "../blockchain-interaction/useVaultsAddresses";
 import { VaultType, VaultAddress } from "../types/Vault";
 import useSingleVault from "@/blockchain-interaction/useSingleVault";
 import Navbar from "@/components/NavBar";
 import AllVaults from "@/components/AllVaults";
+import VaultContext from "@/context/VaultContext";
 
 const ExploreAllVaultsPage = () => {
   const navigate = useNavigate();
 
   const [vaults, setVaults] = useState<VaultType[]>([]);
+
+  const vaultContext = useContext(VaultContext);
+  if (!vaultContext) throw new Error("VaultContext missing");
+  const { areVaultsChanged, setAreVaultsChanged } = vaultContext;
 
   const { allVaultsAddresses } = useVaultsAddresses();
   const { getSingleVault } = useSingleVault();
@@ -28,14 +33,18 @@ const ExploreAllVaultsPage = () => {
       setVaults(allData);
 
       console.log("all data : ", allData);
+      if (areVaultsChanged) {
+        setAreVaultsChanged(false);
+      }
     };
 
     init();
-  }, [allVaultsAddresses]);
+  }, [allVaultsAddresses, areVaultsChanged]);
 
   return (
     <div>
       <Navbar />
+
       <div className="min-h-screen bg-black py-4 text-white">
         <div className="flex justify-end items-center mb-6">
           <button

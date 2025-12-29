@@ -9,49 +9,65 @@ import {
   ArrowUpRight,
 } from "lucide-react";
 
-import {
-  PieChart,
-  Pie,
-  Cell,
-  Tooltip,
-  ResponsiveContainer,
-  Legend,
-} from "recharts";
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 
-import { useLocation, useNavigate } from "react-router-dom";
-
+import { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { VaultType } from "@/types/Vault";
-import { formatEther, parseEther } from "ethers";
+import { formatEther } from "ethers";
 import { COLORS } from "@/lib/COLORS";
-
-type LocationState = {
-  vault: VaultType;
-};
+import VaultContext from "@/context/VaultContext";
+import useSingleVault from "@/blockchain-interaction/useSingleVault";
+import { useParams } from "react-router-dom";
 
 const SingleVaultPage = () => {
+  const vaultContext = useContext(VaultContext);
   const navigate = useNavigate();
-  const location = useLocation();
+  const { vaultAddress } = useParams<{ vaultAddress: string }>();
 
-  const state = location.state as LocationState | null;
+  if (!vaultContext) throw new Error("VaultContext missing");
 
-  if (!state?.vault) {
+  const { areVaultsChanged, setAreVaultsChanged } = vaultContext;
+  const [vault, setVault] = useState<VaultType | null>(null);
+  console.log(vaultAddress);
+
+  if (!vaultAddress) {
     navigate("/");
     return null;
   }
 
+  const { getSingleVault } = useSingleVault();
+
+  useEffect(() => {
+    const fetchVault = async () => {
+      const freshVault = await getSingleVault(vaultAddress);
+      setVault(freshVault);
+
+      if (areVaultsChanged) {
+        setAreVaultsChanged(false);
+      }
+    };
+
+    fetchVault();
+  }, [vaultAddress, areVaultsChanged]);
+
+  console.log(vaultAddress);
+  if (!vault) {
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        Loading vault...
+      </div>
+    );
+  }
   const {
-    vaultAddress,
     vaultOwner,
     tokenURI,
     NFTName,
     NFTSymbol,
-    totalShareHolders,
     soldShares,
     floorPrice,
     allShareholderData,
-  } = state.vault;
-
-  console.log(vaultAddress);
+  } = vault;
 
   return (
     <div>

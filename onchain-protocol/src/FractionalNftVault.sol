@@ -2,10 +2,14 @@
 pragma solidity ^0.8.13;
 
 import {VaultToken} from "./VaultToken.sol";
-import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import {
+    ReentrancyGuard
+} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {Address} from "@openzeppelin/contracts/utils/Address.sol";
-import {IERC721Receiver} from "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
+import {
+    IERC721Receiver
+} from "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 import {FractionalNFT} from "./FractionalNFT.sol";
 
 /// @title Fractional NFT Vault
@@ -26,6 +30,10 @@ contract FractionalNftVault is
 
     FractionalNFT public immutable nftContract;
     address public immutable factory;
+
+    address[] public shareholders;
+    mapping(address => uint256) private shareholderIndex;
+    mapping(address => bool) public isShareholder;
 
     /// @notice Thrown when user sends less ETH than required
     error RequiredETHForTokens(uint256 passedValue, uint256 requiredValue);
@@ -72,7 +80,15 @@ contract FractionalNftVault is
         ) = _calculateSharesPrice(_numberSharesToBuy);
 
         // CHECKS
-        if (balanceOf(_msgSender()) == 0) {
+        // if (balanceOf(_msgSender()) == 0) {
+        //     shareHoldersCount++;
+        // }
+
+        // CHECKS
+        if (!isShareholder[_msgSender()]) {
+            isShareholder[_msgSender()] = true;
+            shareholderIndex[_msgSender()] = shareholders.length;
+            shareholders.push(_msgSender());
             shareHoldersCount++;
         }
 
@@ -107,7 +123,24 @@ contract FractionalNftVault is
 
         // EFFECTS
         _burn(_msgSender(), requiredTokens);
+
+        // if (balanceOf(_msgSender()) == 0) {
+        //     shareHoldersCount--;
+        // }
+
         if (balanceOf(_msgSender()) == 0) {
+            uint256 index = shareholderIndex[_msgSender()];
+            uint256 lastIndex = shareholders.length - 1;
+
+            if (index != lastIndex) {
+                address lastHolder = shareholders[lastIndex];
+                shareholders[index] = lastHolder;
+                shareholderIndex[lastHolder] = index;
+            }
+
+            shareholders.pop();
+            delete shareholderIndex[_msgSender()];
+            delete isShareholder[_msgSender()];
             shareHoldersCount--;
         }
 
@@ -145,7 +178,7 @@ contract FractionalNftVault is
 
         numberOfRequiredTokens = (_numberSharesToBuy * TOKENS_PER_SHARE) / 1e18;
 
-        uint256 currentETHPerToken = _updatedETHPrice();
+        uint256 currentETHPerToken = updatedETHPrice();
         requiredETH = (currentETHPerToken * numberOfRequiredTokens) / 1e18;
     }
 
@@ -159,6 +192,10 @@ contract FractionalNftVault is
 
         // EFFECTS
         _burn(_msgSender(), balanceOf(_msgSender()));
+
+        // shareHoldersCount = 0
+
+        delete shareholders;
         shareHoldersCount = 0;
         // INTERACTIONS
         nftContract.safeTransferFrom(address(this), _to, 0);
@@ -166,7 +203,7 @@ contract FractionalNftVault is
 
     /// @notice Calculate updated ETH price per token
     /// @return New ETH price per token
-    function _updatedETHPrice() internal view returns (uint256) {
+    function updatedETHPrice() public view returns (uint256) {
         uint256 percentageIncrease = (BASE_ETH_PER_TOKEN * shareHoldersCount) /
             1000;
         return BASE_ETH_PER_TOKEN + percentageIncrease;

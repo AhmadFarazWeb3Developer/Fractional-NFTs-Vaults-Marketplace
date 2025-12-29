@@ -11,6 +11,7 @@ interface AllVaultsProps {
 
 const AllVaults = ({ vaults }: AllVaultsProps) => {
   const navigate = useNavigate();
+  console.log("vaults : ", vaults);
 
   return (
     <>
@@ -65,7 +66,7 @@ const AllVaults = ({ vaults }: AllVaultsProps) => {
 
                 <button
                   onClick={() =>
-                    navigate("/single-vault", { state: { vault } })
+                    navigate(`/single-vault/${vault.vaultAddress}`)
                   }
                   className="w-full flex items-center justify-center gap-1 bg-[#21e786] text-black py-3  cursor-pointer border border-black"
                 >

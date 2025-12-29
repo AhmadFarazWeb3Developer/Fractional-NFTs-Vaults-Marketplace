@@ -1,12 +1,18 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Navbar from "@/components/NavBar";
 import useBuyShares from "@/blockchain-interaction/useBuyShares";
 import { useLocation, useNavigate } from "react-router-dom";
 import { VaultAddress } from "@/types/Vault";
 import { Loader, ShoppingCart } from "lucide-react";
+import VaultContext from "@/context/VaultContext";
 
 const BuySharesPage = () => {
   const [numberOfSharesToBuy, setNumberOfSharesToBuy] = useState("");
+
+  const vaultContext = useContext(VaultContext);
+  if (!vaultContext) throw new Error("VaultContext missing");
+
+  const { setAreVaultsChanged } = vaultContext;
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -22,7 +28,8 @@ const BuySharesPage = () => {
     const result = await buyShares(numberOfSharesToBuy, state?.vaultAddress);
 
     if (result === true) {
-      navigate("/explore-vaults");
+      setAreVaultsChanged(true);
+      navigate(`/single-vault/${state.vaultAddress}`);
     }
   };
 
