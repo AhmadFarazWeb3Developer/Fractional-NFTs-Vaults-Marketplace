@@ -80,11 +80,6 @@ contract FractionalNftVault is
         ) = _calculateSharesPrice(_numberSharesToBuy);
 
         // CHECKS
-        // if (balanceOf(_msgSender()) == 0) {
-        //     shareHoldersCount++;
-        // }
-
-        // CHECKS
         if (!isShareholder[_msgSender()]) {
             isShareholder[_msgSender()] = true;
             shareholderIndex[_msgSender()] = shareholders.length;

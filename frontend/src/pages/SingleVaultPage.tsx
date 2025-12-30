@@ -30,7 +30,6 @@ const SingleVaultPage = () => {
 
   const { areVaultsChanged, setAreVaultsChanged } = vaultContext;
   const [vault, setVault] = useState<VaultType | null>(null);
-  console.log(vaultAddress);
 
   if (!vaultAddress) {
     navigate("/");
@@ -52,7 +51,6 @@ const SingleVaultPage = () => {
     fetchVault();
   }, [vaultAddress, areVaultsChanged]);
 
-  console.log(vaultAddress);
   if (!vault) {
     return (
       <div className="min-h-screen bg-black text-white flex items-center justify-center">

@@ -1,15 +1,30 @@
 import { formatEther, parseUnits } from "ethers";
-import { decodeError } from "./helpers/decodeError";
+// import { decodeError } from "./helpers/decodeError";
+import { DecodedError, ErrorDecoder } from "ethers-decode-error";
+
 import { useState } from "react";
 import { toast } from "sonner";
-import type { Log, LogDescription } from "ethers";
+import type { Contract, Log, LogDescription } from "ethers";
 import useVaultInstance from "./helpers/vaultInstance";
+import abis from "./helpers/abi";
+import customErrorsInterface from "./helpers/customErrorsInterface";
+
+const { factoryAbi, fractionalNftVaultAbi, vaultTokenAbi, fractionalNFTAbi } =
+  abis();
+
+const errorDecoder = ErrorDecoder.create([
+  factoryAbi,
+  fractionalNftVaultAbi,
+  vaultTokenAbi,
+  fractionalNFTAbi,
+]);
 
 const useBuyShares = () => {
   const [loading, setLoading] = useState(false);
 
   const { getVaultInstance } = useVaultInstance();
 
+  let instance: Contract;
   const buyShares = async (
     numberOfSharesToBuy: string,
     vaultAddress: string
@@ -19,6 +34,7 @@ const useBuyShares = () => {
 
       const vaultInstance = await getVaultInstance(vaultAddress);
       const vault = vaultInstance?.vaultInstance;
+      instance = vault;
 
       const sharesToBuy = parseUnits(numberOfSharesToBuy, 18);
 
@@ -27,6 +43,7 @@ const useBuyShares = () => {
       const tx = await vault.buyShares(sharesToBuy, {
         value: requiredETH,
       });
+
       const receipt = await tx.wait();
 
       const iface = vault.interface;
@@ -71,8 +88,32 @@ const useBuyShares = () => {
         );
         return true;
       }
-    } catch (error) {
-      decodeError(error);
+    } catch (error: any) {
+      console.log(error);
+
+      const {
+        reason,
+        type,
+        data,
+        args,
+        name,
+        selector,
+        signature,
+        fragment,
+      }: DecodedError = await errorDecoder.decode(error);
+
+      // console.log(reason);
+      console.log(type);
+      // console.log(data);
+      // console.log(args);
+      // console.log(name);
+      // console.log(selector);
+      // console.log(signature);
+      // console.log(fragment);
+
+      const decodedError: DecodedError = await errorDecoder.decode(error);
+
+      console.log(decodedError);
       setLoading(false);
     } finally {
       setLoading(false);

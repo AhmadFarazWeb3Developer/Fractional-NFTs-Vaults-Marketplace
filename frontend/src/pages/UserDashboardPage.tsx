@@ -54,13 +54,10 @@ const UserDashboardPage = () => {
 
       const sharesResult: UserVaultShare[] = [];
 
-      console.log("vaults data : ", allVaultsData);
       for (const vault of allVaultsData) {
         const userData = vault.allShareholderData.find(
           (s) => s.shareholder.toLowerCase() === address.toLowerCase()
         );
-
-        console.log("user data : ", userData);
 
         if (!userData) continue;
 
