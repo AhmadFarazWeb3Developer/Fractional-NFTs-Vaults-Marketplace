@@ -1,3 +1,4 @@
+import { User } from "lucide-react";
 import ConnectButton from "./ConnectButton";
 
 const Navbar = () => {

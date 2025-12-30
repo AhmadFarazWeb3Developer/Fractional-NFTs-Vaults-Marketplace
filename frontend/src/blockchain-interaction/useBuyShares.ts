@@ -1,14 +1,14 @@
-import { Contract, formatEther, parseUnits } from "ethers";
-import abis from "./helpers/abi";
-import useSigner from "./helpers/useSigner";
+import { formatEther, parseUnits } from "ethers";
 import { decodeError } from "./helpers/decodeError";
 import { useState } from "react";
 import { toast } from "sonner";
 import type { Log, LogDescription } from "ethers";
+import useVaultInstance from "./helpers/vaultInstance";
 
 const useBuyShares = () => {
-  const { getSigner } = useSigner();
   const [loading, setLoading] = useState(false);
+
+  const { getVaultInstance } = useVaultInstance();
 
   const buyShares = async (
     numberOfSharesToBuy: string,
@@ -16,27 +16,20 @@ const useBuyShares = () => {
   ) => {
     try {
       setLoading(true);
-      const { signer } = await getSigner();
-      const { fractionalNftVaultAbi } = abis();
 
-      const vaultInstance = new Contract(
-        vaultAddress,
-        fractionalNftVaultAbi,
-        signer
-      );
+      const vaultInstance = await getVaultInstance(vaultAddress);
+      const vault = vaultInstance?.vaultInstance;
 
       const sharesToBuy = parseUnits(numberOfSharesToBuy, 18);
 
-      const [requiredETH] = await vaultInstance._calculateSharesPrice(
-        sharesToBuy
-      );
+      const [requiredETH] = await vault._calculateSharesPrice(sharesToBuy);
 
-      const tx = await vaultInstance.buyShares(sharesToBuy, {
+      const tx = await vault.buyShares(sharesToBuy, {
         value: requiredETH,
       });
       const receipt = await tx.wait();
 
-      const iface = vaultInstance.interface;
+      const iface = vault.interface;
 
       const parsedLog: LogDescription | null =
         receipt.logs

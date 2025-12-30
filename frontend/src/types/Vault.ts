@@ -7,14 +7,24 @@ export type VaultType = {
   totalShareHolders: string;
   soldShares: string;
   floorPrice: bigint;
-  allShareholderData: shareholdersType[];
+  allShareholderData: ShareholdersType[];
 };
 
 export type VaultAddress = {
   vaultAddress: string;
 };
 
-export type shareholdersType = {
+export type ShareholdersType = {
   shareholder: string;
   shares: string;
+};
+
+export type UserVaultShare = {
+  vaultAddress: string;
+  NFTName: string;
+  NFTSymbol: string;
+  userShares: number;
+  totalShares: number;
+  ownershipPercent: number;
+  status: "Active" | "Partial" | "Full Ownership";
 };

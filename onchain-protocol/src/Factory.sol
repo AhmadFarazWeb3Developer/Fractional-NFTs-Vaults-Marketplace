@@ -13,8 +13,11 @@ import {FractionalNftVault} from "./FractionalNftVault.sol";
 /// @dev Each unique NFT collection name/symbol pair maps to one vault
 
 contract FractionalNFTsVaultsMarketplaceFactory is Context, Ownable {
-    /// @dev Maps vault Owner → deployed vault
-    mapping(address => address) public vaults;
+    /// @dev all deployed vaults
+    address[] public allVaults;
+
+    /// @dev all vaults against single address
+    mapping(address => address[]) public userVaults;
 
     /// @dev Tracks uniqueness of NFT names
     mapping(string => bool) private nftNames;
@@ -23,6 +26,12 @@ contract FractionalNFTsVaultsMarketplaceFactory is Context, Ownable {
     mapping(string => bool) private nftSymbols;
 
     error NftNameOrSymbolExits();
+
+    event VaultCreated(
+        address indexed owner,
+        address indexed vault,
+        address indexed nft
+    );
 
     constructor(address _marketPlaceOwner) Ownable(_marketPlaceOwner) {}
 
@@ -53,9 +62,13 @@ contract FractionalNFTsVaultsMarketplaceFactory is Context, Ownable {
             address(this)
         );
 
-        vaults[_msgSender()] = address(vault);
+        allVaults.push(address(vault));
+        userVaults[_msgSender()].push(address(vault));
+
         nftNames[_nftName] = true;
         nftSymbols[_nftSymbol] = true;
+
+        emit VaultCreated(_msgSender(), address(vault), address(nft));
 
         return address(vault);
     }
@@ -64,6 +77,16 @@ contract FractionalNFTsVaultsMarketplaceFactory is Context, Ownable {
 
     function sweepETH(address _address) external onlyOwner {
         Address.sendValue(payable(_address), address(this).balance);
+    }
+
+    function allVaultsLength() external view returns (uint256) {
+        return allVaults.length;
+    }
+
+    function userVaultsLength(
+        address _userAddress
+    ) external view returns (uint256) {
+        return userVaults[_userAddress].length;
     }
 
     /// @notice Receive ETH with no calldata

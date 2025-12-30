@@ -79,6 +79,16 @@ contract FractionalNFTsVaultsMarketplaceFactory is Context, Ownable {
         Address.sendValue(payable(_address), address(this).balance);
     }
 
+    function allVaultsLength() external view returns (uint256) {
+        return allVaults.length;
+    }
+
+    function userVaultsLength(
+        address _userAddress
+    ) external view returns (uint256) {
+        return userVaults[_userAddress].length;
+    }
+
     /// @notice Receive ETH with no calldata
     receive() external payable {}
 

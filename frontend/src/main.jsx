@@ -12,6 +12,8 @@ import CreateVaultPage from "./pages/CreateVaultPage.js";
 import SingleVaultPage from "./pages/SingleVaultPage.js";
 import BuySharesPage from "./pages/BuySharesPage.js";
 import WithdrawSharesPage from "./pages/WithdrawSharesPage.js";
+import UserDashboardPage from "./pages/UserDashboardPage.js";
+import ClaimNftPage from "./pages/ClaimNftPage.js";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -26,6 +28,14 @@ const router = createBrowserRouter([
       {
         path: "/single-vault/withdraw-shares",
         element: <WithdrawSharesPage />,
+      },
+      {
+        path: "/dashboard",
+        element: <UserDashboardPage />,
+      },
+      {
+        path: "/claim-nft/:vaultAddress",
+        element: <ClaimNftPage />,
       },
     ],
   },

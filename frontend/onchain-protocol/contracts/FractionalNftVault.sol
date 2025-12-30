@@ -213,10 +213,9 @@ contract FractionalNftVault is
         // EFFECTS
         _burn(_msgSender(), balanceOf(_msgSender()));
 
-        // shareHoldersCount = 0
-
         delete shareholders;
         shareHoldersCount = 0;
+
         // INTERACTIONS
         nftContract.safeTransferFrom(address(this), _to, 0);
     }

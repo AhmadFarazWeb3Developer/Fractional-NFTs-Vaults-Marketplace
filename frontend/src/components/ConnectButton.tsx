@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Eip1193Provider, ethers } from "ethers";
-import { Wallet, ChevronDown } from "lucide-react";
+import { Wallet, ChevronDown, User } from "lucide-react";
 
 import {
   useAppKit,
@@ -11,6 +11,7 @@ import {
 } from "@reown/appkit/react";
 import getChainName from "../blockchain-interaction/helpers/getChainName";
 import { getNetworkToken } from "../blockchain-interaction/helpers/getNetworkToken";
+import { useNavigate } from "react-router-dom";
 
 const ConnectButton = () => {
   const { open, close } = useAppKit();
@@ -18,6 +19,8 @@ const ConnectButton = () => {
   const { caipNetwork, chainId } = useAppKitNetwork();
   const { walletProvider } = useAppKitProvider("eip155");
   const { open: isModalOpen } = useAppKitState();
+
+  const navigate = useNavigate();
 
   const [balance, setBalance] = useState("0.00");
   const [nativeToken, setNativeToken] = useState({
@@ -131,6 +134,12 @@ const ConnectButton = () => {
               </span>
               <ChevronDown size={14} />
             </button>
+            <div
+              onClick={() => navigate("/dashboard")}
+              className=" border border-[#21e786] p-1 rounded-full  text-[#21e786] "
+            >
+              <User size={18} />
+            </div>
           </div>
         ) : (
           <button

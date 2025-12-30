@@ -1,13 +1,21 @@
-import { Contract, formatEther, parseEther, parseUnits } from "ethers";
+import { Contract, formatEther } from "ethers";
 import abis from "./helpers/abi";
 import getProvider from "./helpers/getProvider";
-
-import { shareholdersType } from "@/types/Vault";
+import { ShareholdersType } from "@/types/Vault";
+import { useAppKitNetwork } from "@reown/appkit/react";
+import { toast } from "sonner";
 
 const useSingleVault = () => {
-  const getSingleVault = async (vaultAddress: string) => {
-    const provider = getProvider(31337);
+  const { chainId } = useAppKitNetwork();
 
+  const getSingleVault = async (vaultAddress: string) => {
+    if (!chainId) {
+      toast.error("ChainId not found");
+    }
+    const numericChainId =
+      typeof chainId === "string" ? Number(chainId) : chainId ?? 0;
+
+    const provider = getProvider(numericChainId);
     const { fractionalNftVaultAbi, fractionalNFTAbi } = abis();
 
     const VaultInstance = new Contract(
@@ -19,7 +27,7 @@ const useSingleVault = () => {
     const NFTContractAddress = await VaultInstance.nftContract();
 
     const shareholdersCount = await VaultInstance.shareHoldersCount();
-    let allShareholderData: shareholdersType[] = [];
+    let allShareholderData: ShareholdersType[] = [];
 
     const TOKENS_PER_SHARE = 1000n * 10n ** 18n;
 

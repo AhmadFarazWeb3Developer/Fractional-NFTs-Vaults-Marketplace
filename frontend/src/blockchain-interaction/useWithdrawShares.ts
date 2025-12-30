@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { decodeError } from "./helpers/decodeError";
 import { toast } from "sonner";
-import { Contract, parseUnits, Log, LogDescription } from "ethers";
-import abis from "./helpers/abi";
-import useSigner from "./helpers/useSigner";
+import { parseUnits, Log, LogDescription } from "ethers";
+
+import useVaultInstance from "./helpers/vaultInstance";
 
 type SharesRedeemedEvent = {
   vault: string;
@@ -15,7 +15,8 @@ type SharesRedeemedEvent = {
 
 const useWithdrawShares = () => {
   const [loading, setLoading] = useState(false);
-  const { getSigner } = useSigner();
+
+  const { getVaultInstance } = useVaultInstance();
 
   const withdrawShares = async (
     numberOfSharesToWithdraw: string,
@@ -24,21 +25,15 @@ const useWithdrawShares = () => {
     try {
       setLoading(true);
 
-      const { signer } = await getSigner();
-      const { fractionalNftVaultAbi } = abis();
-
-      const vaultInstance = new Contract(
-        vaultAddress,
-        fractionalNftVaultAbi,
-        signer
-      );
+      const vaultInstance = await getVaultInstance(vaultAddress);
+      const vault = vaultInstance.vaultInstance;
 
       const shares = parseUnits(numberOfSharesToWithdraw, 18);
 
-      const tx = await vaultInstance.redeemShares(shares);
+      const tx = await vault.redeemShares(shares);
       const receipt = await tx.wait();
 
-      const iface = vaultInstance.interface;
+      const iface = vault.interface;
 
       const parsedLogs: LogDescription[] = receipt.logs
 

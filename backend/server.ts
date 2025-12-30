@@ -1,7 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import connectDB from "./config/db.config.js";
-import vaultRouter from "./routes/vault.route.js";
+
 import cors from "cors";
 import uploadNFTUrlRouter from "./routes/uploadNFTUrl.route.js";
 import vaultEventsRouter from "./routes/vaultEvent.route.js";
@@ -15,7 +15,6 @@ app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use("/api/v1", vaultRouter);
 app.use("/api/v1", uploadNFTUrlRouter);
 app.use("/api/v1", vaultEventsRouter);
 

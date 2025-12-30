@@ -3,7 +3,7 @@ import { Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import AllVaults from "./AllVaults";
 import { useEffect, useState } from "react";
-import useVaultsAddresses from "../blockchain-interaction/useVaultsAddresses";
+import useVaultsAddresses from "../blockchain-interaction/useAllVaultsAddresses";
 import { VaultType, VaultAddress } from "../types/Vault";
 import useSingleVault from "@/blockchain-interaction/useSingleVault";
 
@@ -26,8 +26,6 @@ const HotVaults = () => {
         )
       );
       setVaults(allData);
-
-      console.log("all data : ", allData);
     };
 
     init();
