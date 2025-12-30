@@ -51,7 +51,14 @@ const getProvider = (chainId: number) => {
         "any"
       );
     case 80002:
-      return new JsonRpcProvider("https://rpc-amoy.polygon.technology", "any");
+      return new JsonRpcProvider(
+        `https://polygon-amoy.g.alchemy.com/v2/${apiKey}`,
+        {
+          name: "polygon-amoy",
+          chainId: 80002,
+        }
+      );
+
     case 97:
       return new JsonRpcProvider(
         `https://bnb-testnet.g.alchemy.com/v2/${apiKey}`,

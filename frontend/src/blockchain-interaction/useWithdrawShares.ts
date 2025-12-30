@@ -81,26 +81,7 @@ const useWithdrawShares = () => {
         return true;
       }
     } catch (error) {
-      console.log(error);
-
-      const {
-        reason,
-        type,
-        data,
-        args,
-        name,
-        selector,
-        signature,
-        fragment,
-      }: DecodedError = await errorDecoder.decode(error);
-
-      console.log(type);
-
-      const decodedError: DecodedError = await errorDecoder.decode(error);
-
-      console.log(decodedError);
-      // decodeError(error);
-
+      decodeError(error);
       return false;
     } finally {
       setLoading(false);

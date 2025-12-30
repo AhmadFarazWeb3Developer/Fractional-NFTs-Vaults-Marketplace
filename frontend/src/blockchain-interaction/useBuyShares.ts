@@ -1,5 +1,4 @@
 import { formatEther, parseUnits } from "ethers";
-// import { decodeError } from "./helpers/decodeError";
 import { DecodedError, ErrorDecoder } from "ethers-decode-error";
 
 import { useState } from "react";
@@ -7,7 +6,6 @@ import { toast } from "sonner";
 import type { Contract, Log, LogDescription } from "ethers";
 import useVaultInstance from "./helpers/vaultInstance";
 import abis from "./helpers/abi";
-import customErrorsInterface from "./helpers/customErrorsInterface";
 
 const { factoryAbi, fractionalNftVaultAbi, vaultTokenAbi, fractionalNFTAbi } =
   abis();
@@ -25,6 +23,7 @@ const useBuyShares = () => {
   const { getVaultInstance } = useVaultInstance();
 
   let instance: Contract;
+
   const buyShares = async (
     numberOfSharesToBuy: string,
     vaultAddress: string
@@ -90,29 +89,7 @@ const useBuyShares = () => {
       }
     } catch (error: any) {
       console.log(error);
-
-      const {
-        reason,
-        type,
-        data,
-        args,
-        name,
-        selector,
-        signature,
-        fragment,
-      }: DecodedError = await errorDecoder.decode(error);
-
-      // console.log(reason);
-      console.log(type);
-      // console.log(data);
-      // console.log(args);
-      // console.log(name);
-      // console.log(selector);
-      // console.log(signature);
-      // console.log(fragment);
-
       const decodedError: DecodedError = await errorDecoder.decode(error);
-
       console.log(decodedError);
       setLoading(false);
     } finally {
