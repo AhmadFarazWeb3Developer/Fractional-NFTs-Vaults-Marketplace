@@ -11,7 +11,6 @@ interface AllVaultsProps {
 
 const AllVaults = ({ vaults }: AllVaultsProps) => {
   const navigate = useNavigate();
-  console.log("vaults : ", vaults);
 
   return (
     <>

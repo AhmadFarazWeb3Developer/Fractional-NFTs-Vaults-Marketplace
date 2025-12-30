@@ -5,7 +5,6 @@ const deployments = Deployment as Deployments;
 
 const getAddressesByChainId = (chainId: number) => {
   const addresses = deployments[chainId];
-  console.log(addresses.FactoryAddress);
   return { factoryAddress: addresses.FactoryAddress };
 };
 export default getAddressesByChainId;

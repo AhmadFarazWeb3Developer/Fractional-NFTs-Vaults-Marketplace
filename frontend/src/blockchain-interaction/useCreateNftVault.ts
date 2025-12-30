@@ -1,11 +1,10 @@
-import { useAppKitAccount } from "@reown/appkit/react";
 import useWriteInstances from "./helpers/useWriteInstances";
 import { toast } from "sonner";
 import { decodeError } from "./helpers/decodeError";
 import useUploadNFTImage from "./useUploadNFTImage";
+import { Log, LogDescription } from "ethers";
 
 const useCreateNFTVault = () => {
-  const { address } = useAppKitAccount();
   const { writeInstances } = useWriteInstances();
   const { uploadNFTImage } = useUploadNFTImage();
   const createNFTVault = async (
@@ -13,19 +12,14 @@ const useCreateNFTVault = () => {
     nftSymbol: string,
     image: File | null
   ) => {
-    if (!address) return;
     if (!image) {
       toast.error("NFT image is required");
       return;
     }
 
-    console.log(nftName);
-    console.log(nftSymbol);
-    console.log(image);
-
     try {
       const instances = await writeInstances();
-      console.log(instances);
+
       if (!instances) return;
 
       const { factoryInstance } = instances;
@@ -39,9 +33,35 @@ const useCreateNFTVault = () => {
       );
 
       const receipt = await tx.wait();
+
       if (!receipt) return;
 
-      const vaultAddress = await factoryInstance.vaults(address);
+      const ifac = factoryInstance.interface;
+
+      console.log(ifac);
+      const parsedLogs: LogDescription[] = receipt.logs
+        .map((log: Log) => {
+          try {
+            return ifac.parseLog(log);
+          } catch (error) {
+            return null;
+          }
+        })
+        .filter((e: LogDescription) => e !== null);
+
+      console.log(parsedLogs);
+
+      const createdVaultEvent = parsedLogs.find(
+        (e) => e.name === "VaultCreated"
+      );
+
+      if (createdVaultEvent) {
+        console.log(createdVaultEvent.args.owner);
+        console.log(createdVaultEvent.args.vault);
+        console.log(createdVaultEvent.args.nft);
+      }
+
+      const vaultAddress = createdVaultEvent?.args.vault;
 
       const response = await fetch(
         "http://localhost:8000/api/v1/create-vault",
@@ -63,8 +83,6 @@ const useCreateNFTVault = () => {
       toast.success("Vault created!", {
         action: { label: "Close", onClick: () => {} },
       });
-
-      // console.log(receipt);
 
       return true;
     } catch (error: any) {

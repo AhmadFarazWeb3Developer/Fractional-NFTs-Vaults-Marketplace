@@ -17,7 +17,6 @@ const useVaultsAddresses = () => {
 
         const data = await response.json();
 
-        console.log("data : ", data);
         if (response.status === 201) {
           setVaultsAddresses(data);
         }

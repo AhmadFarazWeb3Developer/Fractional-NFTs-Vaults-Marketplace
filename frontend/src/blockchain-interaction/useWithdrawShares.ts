@@ -38,11 +38,10 @@ const useWithdrawShares = () => {
       const tx = await vaultInstance.redeemShares(shares);
       const receipt = await tx.wait();
 
-      console.log(receipt);
-
       const iface = vaultInstance.interface;
 
       const parsedLogs: LogDescription[] = receipt.logs
+
         .map((log: Log): LogDescription | null => {
           try {
             return iface.parseLog(log);
@@ -54,8 +53,6 @@ const useWithdrawShares = () => {
 
       const redeemedEvent = parsedLogs.find((e) => e.name === "SharesRedeemed");
 
-      console.log(redeemedEvent);
-
       if (redeemedEvent) {
         const eventData: SharesRedeemedEvent = {
           vault: redeemedEvent.args.vault,
@@ -64,8 +61,6 @@ const useWithdrawShares = () => {
           type: "sell",
           timestamp: redeemedEvent.args.timestamp.toString(),
         };
-
-        console.log("SharesRedeemed Event:", eventData);
 
         await fetch(`${import.meta.env.VITE_SERVER_URL_V1}/vault-event`, {
           method: "POST",

@@ -31,8 +31,6 @@ const ExploreAllVaultsPage = () => {
         )
       );
       setVaults(allData);
-
-      console.log("all data : ", allData);
       if (areVaultsChanged) {
         setAreVaultsChanged(false);
       }
