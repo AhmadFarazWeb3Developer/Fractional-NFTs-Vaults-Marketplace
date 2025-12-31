@@ -5,6 +5,7 @@ const useUploadNFTImage = () => {
 
   const uploadNFTImage = async (file: File) => {
     try {
+      console.log(file);
       const { signedUrlData } = await fetchPresignedUrl(file.name);
 
       const uploadUrl = signedUrlData.data;

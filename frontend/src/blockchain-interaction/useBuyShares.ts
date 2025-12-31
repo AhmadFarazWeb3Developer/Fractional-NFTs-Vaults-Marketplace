@@ -90,7 +90,7 @@ const useBuyShares = () => {
     } catch (error: any) {
       console.log(error);
       const decodedError: DecodedError = await errorDecoder.decode(error);
-      console.log(decodedError);
+      toast.error(decodedError.reason);
       setLoading(false);
     } finally {
       setLoading(false);

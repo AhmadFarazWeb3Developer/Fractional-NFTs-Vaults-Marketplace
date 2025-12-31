@@ -28,12 +28,20 @@ export default defineConfig({
     polygon_amoy: {
       type: "http",
       chainType: "l1",
-      url: "https://rpc-amoy.polygon.technology",
+      url: `https://polygon-amoy.g.alchemy.com/v2/${process.env.ALCHEMY_RPC_API_KEY}`,
       accounts: [process.env.PRIVATE_KEY],
       chainId: 80002,
+    },
+    avalanche_fuji: {
+      type: "http",
+      chainType: "l1",
+      url: `https://avax-fuji.g.alchemy.com/v2/${process.env.ALCHEMY_RPC_API_KEY}`,
+      accounts: [process.env.PRIVATE_KEY],
+      chainId: 43113,
     },
   },
 });
 
-//  npx hardhat run scripts/deployProtocol.ts  --network localhost
-// npx hardhat run scripts/deployProtocol.ts --network polygon_amoy
+// npx hardhat run scripts/deployProtocol.ts --network localhost
+// npx hardhat run scripts/deployProtocol.ts --network polygon_amoy // anomy public provider is slow
+// npx hardhat run scripts/deployProtocol.ts --network avalanche_fuji

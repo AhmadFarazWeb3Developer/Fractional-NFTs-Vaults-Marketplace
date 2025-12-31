@@ -81,7 +81,11 @@ const useWithdrawShares = () => {
         return true;
       }
     } catch (error) {
-      decodeError(error);
+      console.log(error);
+
+      const decodedError: DecodedError = await errorDecoder.decode(error);
+      toast.error(decodedError.reason);
+      // decodeError(error);
       return false;
     } finally {
       setLoading(false);

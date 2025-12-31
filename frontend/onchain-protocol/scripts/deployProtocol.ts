@@ -1,7 +1,7 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "fs";
 import { network, config } from "hardhat";
 
-const { ethers } = await network.connect("polygon_amoy");
+const { ethers } = await network.connect("avalanche_fuji");
 
 type Deployments = Record<string, { [key: string]: any }>;
 
@@ -37,7 +37,7 @@ const deployProtocol = async () => {
     allDeployments[chainId] = {
       ...protocolAddresses,
     };
-
+    console.log("Protocol deployed", protocolAddresses);
     writeFileSync(filePath, JSON.stringify(allDeployments, null, 2));
   } catch (error) {
     console.log(error);

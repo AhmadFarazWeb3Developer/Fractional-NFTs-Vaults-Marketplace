@@ -2,6 +2,9 @@
   "31337": {
     "FactoryAddress": "0x5FbDB2315678afecb367f032d93F642f64180aa3"
   },
+  "43113": {
+    "FactoryAddress": "0x54ce66E182eeB380760FFf5A80f14AF7B71ae604"
+  },
   "80002": {
     "FactoryAddress": "0xB0735C4Dd83B5853bCee7510E70c34a4a44ccc5e"
   }
