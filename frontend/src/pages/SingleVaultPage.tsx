@@ -96,12 +96,12 @@ const SingleVaultPage = () => {
             <h1 className="text-4xl">{NFTName}</h1>
             <p className="text-lg text-white/80">{NFTSymbol.toUpperCase()}</p>
             <div className=" flex items-center gap-2  text-white/60 font-poppins justify-between">
-              <div className="  flex items-center gap-2">
+              <div className=" flex items-center gap-2">
                 <Vault strokeWidth={1} />
                 <p className="text-sm text-white/60">{vaultAddress}</p>
               </div>
               <div className=" flex flex-row justify-center">
-                {vault.vaultOwner === address && (
+                {vaultOwner === address && (
                   <div
                     onClick={handlePullNft}
                     className="w-full flex items-center justify-center   text-xs bg-[#21e786] text-black px-2 py-1 gap-1 cursor-pointer "
@@ -109,11 +109,10 @@ const SingleVaultPage = () => {
                     <p>Pull NFT</p>
                     <ArrowDown size={12} strokeWidth={2} />
                   </div>
-                  // </div>
                 )}
               </div>
             </div>
-            <div className=" flex items-center gap-2   text-white/60  font-poppins">
+            <div className=" flex items-center gap-2  text-white/60  font-poppins">
               <Crown strokeWidth={1} />
               <p className="text-sm text-white/60">{vaultOwner}</p>
             </div>

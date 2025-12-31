@@ -8,10 +8,10 @@ const useDepositNftToVault = () => {
       const instance = await getVaultInstance(vaultAddress);
       const vault = instance.vaultInstance;
       const tx = await vault.depositNftToVault();
-      const receipt = await tx.await();
+      const receipt = await tx.wait();
       console.log(receipt);
     } catch (error) {
-      decodeError(error);
+      await decodeError(error);
     }
   };
   return { depositNftToVault };
