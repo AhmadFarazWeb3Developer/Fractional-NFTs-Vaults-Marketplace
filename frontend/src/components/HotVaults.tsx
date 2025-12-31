@@ -7,7 +7,11 @@ import useVaultsAddresses from "../blockchain-interaction/useAllVaultsAddresses"
 import { VaultType, VaultAddress } from "../types/Vault";
 import useSingleVault from "@/blockchain-interaction/useSingleVault";
 
-const HotVaults = () => {
+interface HotVaultsProps {
+  setTopVault: React.Dispatch<React.SetStateAction<VaultType | undefined>>;
+}
+
+const HotVaults = ({ setTopVault }: HotVaultsProps) => {
   const navigate = useNavigate();
 
   const [vaults, setVaults] = useState<VaultType[]>([]);
@@ -25,7 +29,12 @@ const HotVaults = () => {
             await getSingleVault(vaultAddress?.vaultAddress)
         )
       );
-      setVaults(allData);
+
+      allData.sort((a, b) =>
+        a.totalShareHolders > b.totalShareHolders ? -1 : 1
+      );
+      setVaults(allData.slice(0, 4));
+      setTopVault(allData[0]);
     };
 
     init();

@@ -1,8 +1,12 @@
 import { ArrowRight } from "lucide-react";
 import NFTCardStack from "./NFTCardStack";
 import { useNavigate } from "react-router-dom";
+import { VaultType } from "@/types/Vault";
 
-const HeroSection = () => {
+interface HeroSectionProps {
+  topVault?: VaultType;
+}
+const HeroSection = ({ topVault }: HeroSectionProps) => {
   const navigate = useNavigate();
 
   return (
@@ -58,7 +62,7 @@ const HeroSection = () => {
           </div>
         </div>
 
-        <NFTCardStack />
+        <NFTCardStack topVault={topVault} />
       </div>
     </div>
   );

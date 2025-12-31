@@ -88,7 +88,7 @@ const SingleVaultPage = () => {
             <img
               src={tokenURI.slice(0, -1)}
               alt={NFTName}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover "
             />
           </div>
 

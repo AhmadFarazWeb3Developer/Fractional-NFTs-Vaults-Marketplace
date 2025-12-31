@@ -3,6 +3,7 @@ import { ArrowRight, Loader, Upload } from "lucide-react";
 import useCreateNFTVault from "../blockchain-interaction/useCreateNftVault";
 import Navbar from "@/components/NavBar";
 import { useNavigate } from "react-router-dom";
+import Footer from "@/components/Footer";
 
 const CreateVaultPage = () => {
   const [nftName, setNftName] = useState("");
@@ -107,6 +108,7 @@ const CreateVaultPage = () => {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

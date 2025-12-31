@@ -5,6 +5,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { VaultAddress } from "@/types/Vault";
 import { Loader, ShoppingCart } from "lucide-react";
 import VaultContext from "@/context/VaultContext";
+import Footer from "@/components/Footer";
 
 const BuySharesPage = () => {
   const [numberOfSharesToBuy, setNumberOfSharesToBuy] = useState("");
@@ -37,7 +38,7 @@ const BuySharesPage = () => {
     <div className="min-h-screen bg-black">
       <Navbar />
 
-      <div className="flex justify-center items-center px-4 mt-20">
+      <div className="flex justify-center items-center px-4 my-20">
         <div className="w-full max-w-md border border-white/15 bg-black p-8 space-y-6">
           <h2 className="text-xl text-white text-center">Buy Vault Shares</h2>
 
@@ -70,6 +71,7 @@ const BuySharesPage = () => {
           </button>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

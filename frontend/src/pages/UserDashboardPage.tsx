@@ -9,6 +9,7 @@ import VaultContext from "@/context/VaultContext";
 import useGetUserVaultsAddresses from "@/blockchain-interaction/useGetUserVaultsAddresses";
 import { useAppKitAccount } from "@reown/appkit/react";
 import useAllVaultsAddresses from "@/blockchain-interaction/useAllVaultsAddresses";
+import Footer from "@/components/Footer";
 
 const UserDashboardPage = () => {
   const [activeTab, setActiveTab] = useState<"vaults" | "shares">("vaults");
@@ -51,7 +52,6 @@ const UserDashboardPage = () => {
       setUserVaults(vaultsData);
 
       // USER SHARES
-
       const sharesResult: UserVaultShare[] = [];
 
       for (const vault of allVaultsData) {
@@ -124,6 +124,7 @@ const UserDashboardPage = () => {
           )}
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

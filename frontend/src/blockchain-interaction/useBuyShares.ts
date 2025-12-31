@@ -1,9 +1,7 @@
 import { formatEther, parseUnits } from "ethers";
-import { DecodedError, ErrorDecoder } from "ethers-decode-error";
-
 import { useState } from "react";
 import { toast } from "sonner";
-import type { Contract, Log, LogDescription } from "ethers";
+import type { Log, LogDescription } from "ethers";
 import useVaultInstance from "./helpers/vaultInstance";
 import decodeError from "./helpers/decodeError";
 
@@ -11,8 +9,6 @@ const useBuyShares = () => {
   const [loading, setLoading] = useState(false);
 
   const { getVaultInstance } = useVaultInstance();
-
-  let instance: Contract;
 
   const buyShares = async (
     numberOfSharesToBuy: string,
@@ -23,7 +19,6 @@ const useBuyShares = () => {
 
       const vaultInstance = await getVaultInstance(vaultAddress);
       const vault = vaultInstance?.vaultInstance;
-      instance = vault;
 
       const sharesToBuy = parseUnits(numberOfSharesToBuy, 18);
 

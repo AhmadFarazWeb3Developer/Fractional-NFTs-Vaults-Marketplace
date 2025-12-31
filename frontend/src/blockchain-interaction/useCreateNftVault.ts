@@ -25,9 +25,6 @@ const useCreateNFTVault = () => {
 
       const { ipfsLink: nftUri } = await uploadNFTImage(image);
 
-      console.log(nftName);
-      console.log(Symbol);
-      console.log(nftUri);
       const tx = await factoryInstance.createNftVault(
         nftName,
         nftSymbol,

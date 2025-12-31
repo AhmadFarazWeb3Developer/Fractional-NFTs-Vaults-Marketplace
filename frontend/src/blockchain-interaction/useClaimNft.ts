@@ -2,6 +2,7 @@ import { useState } from "react";
 
 import useVaultInstance from "./helpers/vaultInstance";
 import decodeError from "./helpers/decodeError";
+import { toast } from "sonner";
 
 const useClaimNft = () => {
   const { getVaultInstance } = useVaultInstance();
@@ -18,6 +19,10 @@ const useClaimNft = () => {
       const receipt = tx.wait();
 
       console.log(receipt);
+
+      if (receipt) {
+        toast.success("NFT claimed successfully!");
+      }
     } catch (error) {
       await decodeError(error);
       setLoading(false);

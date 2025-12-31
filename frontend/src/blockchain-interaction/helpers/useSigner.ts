@@ -10,8 +10,6 @@ const useSigner = () => {
     const provider = new BrowserProvider(walletProvider as Eip1193Provider);
     const signer = await provider.getSigner();
 
-    console.log(signer);
-
     return { signer };
   };
 

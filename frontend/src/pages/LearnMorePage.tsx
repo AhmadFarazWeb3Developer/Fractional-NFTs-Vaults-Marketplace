@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Navbar from "../components/NavBar";
+import Footer from "@/components/Footer";
 
 const LearnMorePage = () => {
   const [step, setStep] = useState(0);
@@ -137,6 +138,7 @@ const LearnMorePage = () => {
           </div>
         </main>
       </div>
+      <Footer />
     </div>
   );
 };

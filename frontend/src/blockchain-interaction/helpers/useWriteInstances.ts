@@ -20,8 +20,6 @@ const useWriteInstances = () => {
     const { signer } = await getSigner();
 
     const factoryInstance = new Contract(factoryAddress, factoryAbi, signer);
-    console.log(chainId);
-    console.log(factoryInstance);
 
     return { factoryInstance };
   };

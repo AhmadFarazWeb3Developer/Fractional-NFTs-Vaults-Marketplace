@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Eip1193Provider, ethers } from "ethers";
 import { Wallet, ChevronDown, User } from "lucide-react";
 

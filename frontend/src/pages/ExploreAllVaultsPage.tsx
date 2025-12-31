@@ -7,6 +7,7 @@ import useSingleVault from "@/blockchain-interaction/useSingleVault";
 import Navbar from "@/components/NavBar";
 import AllVaults from "@/components/AllVaults";
 import VaultContext from "@/context/VaultContext";
+import Footer from "@/components/Footer";
 
 const ExploreAllVaultsPage = () => {
   const navigate = useNavigate();
@@ -43,7 +44,7 @@ const ExploreAllVaultsPage = () => {
     <div>
       <Navbar />
 
-      <div className="min-h-screen bg-black py-4 text-white">
+      <div className="min-h-screen bg-black py-4 mb-10 text-white">
         <div className="flex justify-end items-center mb-6">
           <button
             onClick={() => navigate("/create-vault")}
@@ -56,6 +57,7 @@ const ExploreAllVaultsPage = () => {
 
         <AllVaults vaults={vaults} />
       </div>
+      <Footer />
     </div>
   );
 };

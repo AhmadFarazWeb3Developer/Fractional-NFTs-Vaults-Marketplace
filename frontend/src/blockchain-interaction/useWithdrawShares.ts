@@ -4,13 +4,12 @@ import { toast } from "sonner";
 import { parseUnits, Log, LogDescription } from "ethers";
 
 import useVaultInstance from "./helpers/vaultInstance";
-import abis from "./helpers/abi";
 import decodeError from "./helpers/decodeError";
 
 type SharesRedeemedEvent = {
-  vault: string;
-  seller: string;
-  shares: string;
+  vaultAddress: string;
+  user: string;
+  sharesChange: string;
   type: string;
   timestamp: string;
 };
@@ -52,10 +51,10 @@ const useWithdrawShares = () => {
 
       if (redeemedEvent) {
         const eventData: SharesRedeemedEvent = {
-          vault: redeemedEvent.args.vault,
-          seller: redeemedEvent.args.seller,
-          shares: redeemedEvent.args.shares.toString(),
-          type: "sell",
+          vaultAddress: redeemedEvent.args.vault,
+          user: redeemedEvent.args.seller,
+          sharesChange: redeemedEvent.args.shares.toString(),
+          type: "redeem",
           timestamp: redeemedEvent.args.timestamp.toString(),
         };
 

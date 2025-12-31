@@ -119,10 +119,6 @@ contract FractionalNftVault is
         // EFFECTS
         _burn(_msgSender(), requiredTokens);
 
-        // if (balanceOf(_msgSender()) == 0) {
-        //     shareHoldersCount--;
-        // }
-
         if (balanceOf(_msgSender()) == 0) {
             uint256 index = shareholderIndex[_msgSender()];
             uint256 lastIndex = shareholders.length - 1;
@@ -187,8 +183,6 @@ contract FractionalNftVault is
 
         // EFFECTS
         _burn(_msgSender(), balanceOf(_msgSender()));
-
-        // shareHoldersCount = 0
 
         delete shareholders;
         shareHoldersCount = 0;
