@@ -88,8 +88,8 @@ const ConnectButton = () => {
       <div className="flex flex-row items-center gap-3">
         {isConnected ? (
           <div className="flex flex-row items-center gap-2 p-1 shadow-lg cursor-pointer ">
-            <div className="flex items-center justify-center gap-2 px-4 py-2 ">
-              <Wallet size={18} color="#ffffff" strokeWidth="2px" />
+            <div className="flex items-center justify-center gap-2 px-4 py-2  ">
+              <Wallet size={18} color="#ffffff" strokeWidth={1.5} />
               <div className="flex items-center gap-1">
                 <span className="text-sm text-white ">{balance}</span>
                 <span className="text-sm text-white ">

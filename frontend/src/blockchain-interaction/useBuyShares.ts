@@ -5,17 +5,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import type { Contract, Log, LogDescription } from "ethers";
 import useVaultInstance from "./helpers/vaultInstance";
-import abis from "./helpers/abi";
-
-const { factoryAbi, fractionalNftVaultAbi, vaultTokenAbi, fractionalNFTAbi } =
-  abis();
-
-const errorDecoder = ErrorDecoder.create([
-  factoryAbi,
-  fractionalNftVaultAbi,
-  vaultTokenAbi,
-  fractionalNFTAbi,
-]);
+import decodeError from "./helpers/decodeError";
 
 const useBuyShares = () => {
   const [loading, setLoading] = useState(false);
@@ -88,9 +78,7 @@ const useBuyShares = () => {
         return true;
       }
     } catch (error: any) {
-      console.log(error);
-      const decodedError: DecodedError = await errorDecoder.decode(error);
-      toast.error(decodedError.reason);
+      await decodeError(error);
       setLoading(false);
     } finally {
       setLoading(false);

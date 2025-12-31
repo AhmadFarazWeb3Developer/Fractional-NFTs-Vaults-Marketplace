@@ -1,7 +1,7 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "fs";
 import { network, config } from "hardhat";
 
-const { ethers } = await network.connect("avalanche_fuji");
+const { ethers } = await network.connect("arbitrum_sepolia");
 
 type Deployments = Record<string, { [key: string]: any }>;
 

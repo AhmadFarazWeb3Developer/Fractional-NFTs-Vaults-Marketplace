@@ -39,9 +39,24 @@ export default defineConfig({
       accounts: [process.env.PRIVATE_KEY],
       chainId: 43113,
     },
+    bnb_smart_chain: {
+      type: "http",
+      chainType: "l1",
+      url: `https://bnb-testnet.g.alchemy.com/v2/${process.env.ALCHEMY_RPC_API_KEY}`,
+      accounts: [process.env.PRIVATE_KEY],
+      chainId: 97,
+    },
+    arbitrum_sepolia: {
+      type: "http",
+      url: `https://arb-sepolia.g.alchemy.com/v2/${process.env.ALCHEMY_RPC_API_KEY}`,
+      accounts: [process.env.PRIVATE_KEY],
+      chainId: 421614,
+    },
   },
 });
 
 // npx hardhat run scripts/deployProtocol.ts --network localhost
 // npx hardhat run scripts/deployProtocol.ts --network polygon_amoy // anomy public provider is slow
-// npx hardhat run scripts/deployProtocol.ts --network avalanche_fuji
+// npx hardhat run scripts/deployProtocol.ts --network avalanche_fuji // very cheap
+// npx hardhat run scripts/deployProtocol.ts --network bnb_smart_chain // not deployed fails
+// npx hardhat run scripts/deployProtocol.ts --network arbitrum_sepolia

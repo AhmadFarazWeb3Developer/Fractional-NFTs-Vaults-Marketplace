@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { decodeError } from "./helpers/decodeError";
+
 import { toast } from "sonner";
 import { parseUnits, Log, LogDescription } from "ethers";
 
 import useVaultInstance from "./helpers/vaultInstance";
 import abis from "./helpers/abi";
+import decodeError from "./helpers/decodeError";
 
 type SharesRedeemedEvent = {
   vault: string;
@@ -13,17 +14,6 @@ type SharesRedeemedEvent = {
   type: string;
   timestamp: string;
 };
-import { DecodedError, ErrorDecoder } from "ethers-decode-error";
-
-const { factoryAbi, fractionalNftVaultAbi, vaultTokenAbi, fractionalNFTAbi } =
-  abis();
-
-const errorDecoder = ErrorDecoder.create([
-  factoryAbi,
-  fractionalNftVaultAbi,
-  vaultTokenAbi,
-  fractionalNFTAbi,
-]);
 
 const useWithdrawShares = () => {
   const [loading, setLoading] = useState(false);
@@ -81,11 +71,8 @@ const useWithdrawShares = () => {
         return true;
       }
     } catch (error) {
-      console.log(error);
+      await decodeError(error);
 
-      const decodedError: DecodedError = await errorDecoder.decode(error);
-      toast.error(decodedError.reason);
-      // decodeError(error);
       return false;
     } finally {
       setLoading(false);

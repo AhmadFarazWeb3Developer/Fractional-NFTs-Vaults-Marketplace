@@ -7,6 +7,8 @@ import {
   Crown,
   ShoppingCartIcon,
   ArrowUpRight,
+  Loader,
+  ArrowDown,
 } from "lucide-react";
 
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
@@ -20,23 +22,26 @@ import VaultContext from "@/context/VaultContext";
 import useSingleVault from "@/blockchain-interaction/useSingleVault";
 import { useParams } from "react-router-dom";
 import VaultShareChart from "@/components/VaultShareChart";
+import useDepositNftToVault from "@/blockchain-interaction/useDepositNftToVault";
+import { useAppKitAccount } from "@reown/appkit/react";
 
 const SingleVaultPage = () => {
   const vaultContext = useContext(VaultContext);
   const navigate = useNavigate();
   const { vaultAddress } = useParams<{ vaultAddress: string }>();
-
   if (!vaultContext) throw new Error("VaultContext missing");
+
+  const { address } = useAppKitAccount();
 
   const { areVaultsChanged, setAreVaultsChanged } = vaultContext;
   const [vault, setVault] = useState<VaultType | null>(null);
+  const { depositNftToVault } = useDepositNftToVault();
+  const { getSingleVault } = useSingleVault();
 
   if (!vaultAddress) {
     navigate("/");
     return null;
   }
-
-  const { getSingleVault } = useSingleVault();
 
   useEffect(() => {
     const fetchVault = async () => {
@@ -51,9 +56,15 @@ const SingleVaultPage = () => {
     fetchVault();
   }, [vaultAddress, areVaultsChanged]);
 
+  const handlePullNft = async () => {
+    if (!vaultAddress) return;
+    await depositNftToVault(vaultAddress);
+  };
+
   if (!vault) {
     return (
-      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+      <div className="min-h-screen bg-black  text-[#21e786]  flex items-center justify-center gap-2">
+        <Loader className=" animate-spin " />
         Loading vault...
       </div>
     );
@@ -72,7 +83,6 @@ const SingleVaultPage = () => {
     <div>
       <Navbar />
       <div className="min-h-screen bg-black text-white py-8">
-        {/* NFT & Info Section */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
           <div className="relative h-80 border-1 border-white/15 ">
             <img
@@ -85,9 +95,23 @@ const SingleVaultPage = () => {
           <div className="space-y-4">
             <h1 className="text-4xl">{NFTName}</h1>
             <p className="text-lg text-white/80">{NFTSymbol.toUpperCase()}</p>
-            <div className=" flex items-center gap-2   text-white/60  font-poppins">
-              <Vault strokeWidth={1} />
-              <p className="text-sm text-white/60">{vaultAddress}</p>
+            <div className=" flex items-center gap-2  text-white/60 font-poppins justify-between">
+              <div className="  flex items-center gap-2">
+                <Vault strokeWidth={1} />
+                <p className="text-sm text-white/60">{vaultAddress}</p>
+              </div>
+              <div className=" flex flex-row justify-center">
+                {vault.vaultOwner === address && (
+                  <div
+                    onClick={handlePullNft}
+                    className="w-full flex items-center justify-center   text-xs bg-[#21e786] text-black px-2 py-1 gap-1 cursor-pointer "
+                  >
+                    <p>Pull NFT</p>
+                    <ArrowDown size={12} strokeWidth={2} />
+                  </div>
+                  // </div>
+                )}
+              </div>
             </div>
             <div className=" flex items-center gap-2   text-white/60  font-poppins">
               <Crown strokeWidth={1} />

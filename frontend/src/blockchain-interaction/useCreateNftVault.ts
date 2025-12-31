@@ -1,6 +1,6 @@
 import useWriteInstances from "./helpers/useWriteInstances";
 import { toast } from "sonner";
-import { decodeError } from "./helpers/decodeError";
+import decodeError from "./helpers/decodeError";
 import useUploadNFTImage from "./useUploadNFTImage";
 
 const useCreateNFTVault = () => {
